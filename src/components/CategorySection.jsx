@@ -1,0 +1,1 @@
+// agrupa productos por categoría

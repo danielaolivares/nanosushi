@@ -1,11 +1,14 @@
-import { LogoutStaff } from "../../firebase/firebaseAuth";
-import { auth } from "../../firebase/firebaseAuth";
+import { LogoutStaff, auth } from "../../firebase/firebaseAuth";
 
 const Dashboard = () => {
+    const handleAddProduct = () => {
+        window.location.href = "/staff/add-product";
+    };
+
     return(
         <>
         <h1>Este es un dashboard para el staff</h1>
-
+        <button onClick={handleAddProduct}>Agregar Producto</button>
         <button onClick={() => LogoutStaff(auth)}>Cerrar Sesión</button>
         </>
     )

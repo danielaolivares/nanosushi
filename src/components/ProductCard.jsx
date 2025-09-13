@@ -1,0 +1,1 @@
+//Componente visual para mostrar productos
