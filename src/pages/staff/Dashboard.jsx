@@ -1,8 +1,10 @@
 import { LogoutStaff, auth } from "../../firebase/firebaseAuth";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+    const navigate = useNavigate();
     const handleAddProduct = () => {
-        window.location.href = "/staff/add-product";
+        navigate("/staff/add-product");
     };
 
     return(
@@ -11,7 +13,7 @@ const Dashboard = () => {
         <button onClick={handleAddProduct}>Agregar Producto</button>
         <button onClick={() => LogoutStaff(auth)}>Cerrar Sesión</button>
         </>
-    )
+    );
 };
 
 export default Dashboard;
