@@ -5,55 +5,71 @@ import { useAuth } from "../context/AuthContext";
 
 const FormAddProduct = () => {
     const { user } = useAuth();
+    console.log(user.email);
     const [product, setProduct] = useState({
         name: "",
         description: "",
         price: 0,
         category: "",
-        imageUrl: "",
-        availability: true,
+        availability: false,
+        imageUrl: null,
     });
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setProduct((prev) => ({ ...prev, [name]: value }));
+     const handleChange = (e) => {
+        const { name, value, type, checked, files } = e.target;
+
+        setProduct((prev) => ({
+            ...prev,
+            [name]: type === "checkbox" ? checked : (type === "file" ? (files[0] || null) : value),
+        }));
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // Agregar el email del creador al producto
-        await addProduct({ ...product, emailCreador: user?.email });
+        if(!user || !user.email){
+            alert("No hay usuario logueado, no se puede agregar producto")
+            return;
+        }
+       
+        await addProduct({    
+            ...product, 
+            createdBy: user.email });
         setProduct({
             name: "",
             description: "",
             price: 0,
             category: "",
-            imageUrl: "",
-            availability: true,
+            availability: false,
+            imageUrl: null,
         });
     };
 
+    // Mostrar loader si la sesión se está estableciendo
+    if (user === null) {
+        return <div>Verificando sesión...</div>;
+    }
     // Solo mostrar el formulario si el usuario es admin
-    if (!user || user.email !== "admin@nanosushi.cl") {
+    if (user.email !== "admin@nanosushi.cl") {
         return <div>No tienes permisos para agregar productos.</div>;
     }
 
     return (
         <form onSubmit={handleSubmit}>
-            <div class="mb-3">
-                <label for="name" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="name" placeholder="Ingresa el nombre del producto" name="name" value={product.name} onChange={handleChange} />
+            <div className="mb-3">
+                <label htmlFor="name" className="form-label">Nombre</label>
+                <input type="text" className="form-control" id="name" placeholder="Ingresa el nombre del producto" name="name" value={product.name} onChange={handleChange} />
             </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Descripción del producto</label>
-                <input type="text" class="form-control" id="description" placeholder="Describe tu producto" name="description" value={product.description} onChange={handleChange} />
+            <div className="mb-3">
+                <label htmlFor="description" className="form-label">Descripción del producto</label>
+                <input type="text" className="form-control" id="description" placeholder="Describe tu producto" name="description" value={product.description} onChange={handleChange} />
             </div>
-            <div class="mb-3">
-                <label for="price" class="form-label">Precio</label>
-                <input type="number" class="form-control" id="price" placeholder="Precio del Producto" name="price" value={product.price} onChange={handleChange} />
+            <div className="mb-3">
+                <label htmlFor="price" className="form-label">Precio</label>
+                <input type="number" className="form-control" id="price" placeholder="Precio del Producto" name="price" value={product.price} onChange={handleChange} />
             </div>
-            <select class="form-select" aria-label="Default select example" name="category" value={product.category} onChange={handleChange}>
-                <option selected>selecciona una categoría</option>
+            <select className="form-select" aria-label="Default select example" name="category" value={product.category} onChange={handleChange}>
+                <option value="">selecciona una categoría</option>
                 <option value="1">Envuelto en Ciboulette</option>
                 <option value="2">Envuelto en Sésamo</option>
                 <option value="3">Rolls Tempura Panko</option>
@@ -65,15 +81,29 @@ const FormAddProduct = () => {
                 <option value="9">Extras</option>
                 <option value="10">Gohan</option>
             </select>     
-            <div class="mb-3">
-                <label for="formFile" class="form-label">Imagen de referencia</label>
-                <input class="form-control" type="file" id="formFile" value={product.imageUrl} onChange={handleChange}/>
+            <div className="mb-3">
+                <label htmlFor="formFile" className="form-label">Imagen de referencia</label>
+                <input 
+                className="form-control" 
+                type="file" 
+                id="formFile"
+                name="imageUrl"
+                onChange={ handleChange}
+                />
             </div>
-            <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" role="switch" id="switchAvailability"/>
-                <label class="form-check-label" for="switchAvailability">Disponible</label>
+            <div className="form-check form-switch">
+                <input
+                    className="form-check-input"
+                    type="checkbox"
+                    role="switch"
+                    id="switchAvailability"
+                    name="availability"
+                    checked={product.availability}
+                    onChange={handleChange}
+                />
+                <label className="form-check-label" htmlFor="switchAvailability">Disponible</label>
             </div>
-             <button type="submit" class="btn btn-primary">Subir Producto</button>
+             <button type="submit" className="btn btn-primary">Subir Producto</button>
         </form>
     );
 };

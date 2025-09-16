@@ -4,22 +4,18 @@ import { app } from "./firebaseConfig";
 export const auth = getAuth(app);
 
 export const loginStaff = (auth, email, password) => {
-    signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => { 
-    if (userCredential.user.email === "admin@nanosushi.cl"){
-        window.location.href = "/staff/dashboard";
-    }else {
-        window.location.href = "/staff/delivery";
-    }
-    const user = userCredential.user;
-    console.log(user)
-     
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.error(errorCode, errorMessage);
-  });
+    return signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            console.log(user);
+            return userCredential;
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error(errorCode, errorMessage);
+            throw error;
+        });
 };
 
 export const LogoutStaff = (auth) => {

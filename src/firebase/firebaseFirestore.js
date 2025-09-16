@@ -5,7 +5,7 @@ import { getAuth } from "firebase/auth";
 export const db = getFirestore(app);
 const auth = getAuth(app);
 const user = auth.currentUser;
-console.log("Usuario actual:", user ? user.email : "No hay usuario logueado");
+
 export const addProduct = async (product) => {
   try {
     const docRef = await addDoc(collection(db, "product"), {
@@ -14,9 +14,9 @@ export const addProduct = async (product) => {
         "price": product.price,
         "category": product.category,
         "imageUrl": product.imageUrl,
-        "availability": true,
+        "availability": product.availability,
         "createdAt": new Date(),
-        "createdBy": user.email,
+        "createdBy": product.createdBy,
         // "updatedAt": new Date(),
         // "updatedBy": product.userEmail
     });
