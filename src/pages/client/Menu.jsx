@@ -20,6 +20,7 @@ const Menu = () => {
 
         {products && products.map((product, index) => (
             <div key={index}>
+                <img src={product.imageUrl} alt={product.name} style={{ width: '200px', height: '200px', objectFit: 'cover' }} />
                 <h2>{product.name}</h2>
                 <p>{product.description}</p>
                 <p>Precio: ${product.price}</p>

@@ -1,5 +1,6 @@
 import { getFirestore, collection, addDoc, getDocs, } from "firebase/firestore";
 import { app } from "./firebaseConfig";
+import { uploadImage } from "../supabase/supabaseStorage";
 //import { getAuth } from "firebase/auth";
 
 export const db = getFirestore(app);
@@ -8,12 +9,19 @@ export const db = getFirestore(app);
 
 export const addProduct = async (product) => {
   try {
+    let imageUrl = null;
+
+    if (product.imageUrl){
+      imageUrl = await uploadImage(product.imageUrl);
+    }
+
     const docRef = await addDoc(collection(db, "product"), {
         "name": product.name,
         "description": product.description,
         "price": product.price,
         "category": product.category,
-        "imageUrl": product.imageUrl,
+        // "imageUrl": product.imageUrl,
+        imageUrl,
         "availability": product.availability,
         "createdAt": new Date(),
         "createdBy": product.createdBy,
@@ -40,12 +48,3 @@ export const readProducts = async () => {
     return [];
   }
 };
-// const querySnapshot = await getDocs(collection(db, "product"));
-// querySnapshot.forEach((doc) => {
-//   const product ={ id: doc.id, ...doc.data()};
-//   return product;
-  // doc.data() is never undefined for query doc snapshots
-  //console.log(doc.id, " => ", doc.data());
-  //return product;
-
-//};
