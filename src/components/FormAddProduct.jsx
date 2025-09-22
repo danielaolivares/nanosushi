@@ -5,7 +5,8 @@ import { useAuth } from "../context/AuthContext";
 
 const FormAddProduct = () => {
     const { user } = useAuth();
-    console.log(user.email);
+    const [loading, setLoading] = useState(false);
+
     const [product, setProduct] = useState({
         name: "",
         description: "",
@@ -32,9 +33,12 @@ const FormAddProduct = () => {
             return;
         }
        
+        setLoading(true);
+
         await addProduct({    
             ...product, 
             createdBy: user.email });
+
         setProduct({
             name: "",
             description: "",
@@ -103,7 +107,7 @@ const FormAddProduct = () => {
                 />
                 <label className="form-check-label" htmlFor="switchAvailability">Disponible</label>
             </div>
-             <button type="submit" className="btn btn-primary">Subir Producto</button>
+             <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? "Subiendo...": "Subir Producto"}</button>
         </form>
     );
 };
