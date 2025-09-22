@@ -1,10 +1,10 @@
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDocs, } from "firebase/firestore";
 import { app } from "./firebaseConfig";
-import { getAuth } from "firebase/auth";
+//import { getAuth } from "firebase/auth";
 
 export const db = getFirestore(app);
-const auth = getAuth(app);
-const user = auth.currentUser;
+//const auth = getAuth(app);
+//const user = auth.currentUser;
 
 export const addProduct = async (product) => {
   try {
@@ -25,3 +25,27 @@ export const addProduct = async (product) => {
     console.error("Error adding document: ", e);
   }
 };
+
+
+export const readProducts = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, "product"));
+    const products = [];
+    querySnapshot.forEach((doc) => {
+      products.push({ id: doc.id, ...doc.data() });
+    });
+    return products;
+  } catch (e) {
+    console.error("Error reading products: ", e);
+    return [];
+  }
+};
+// const querySnapshot = await getDocs(collection(db, "product"));
+// querySnapshot.forEach((doc) => {
+//   const product ={ id: doc.id, ...doc.data()};
+//   return product;
+  // doc.data() is never undefined for query doc snapshots
+  //console.log(doc.id, " => ", doc.data());
+  //return product;
+
+//};
