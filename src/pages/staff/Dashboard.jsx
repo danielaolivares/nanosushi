@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const Dashboard = () => {
     const navigate = useNavigate();
     const handleAddProduct = () => {
-        navigate("/staff/add-product");
+        navigate("/add-product");
     };
 
     return(

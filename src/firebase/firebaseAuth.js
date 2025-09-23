@@ -7,7 +7,6 @@ export const loginStaff = (auth, email, password) => {
     return signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             const user = userCredential.user;
-            console.log(user);
             return userCredential;
         })
         .catch((error) => {
@@ -22,7 +21,7 @@ export const LogoutStaff = (auth) => {
     signOut(auth)
     .then(() => {
         // Sign-out successful.
-        window.location.href = "/staff/login";
+        window.location.href = "/login";
     }).catch((error) => {
         console.error(error);
     });

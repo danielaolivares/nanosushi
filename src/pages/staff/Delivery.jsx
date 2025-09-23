@@ -1,5 +1,4 @@
-import { LogoutStaff } from "../../firebase/firebaseAuth";
-import { auth } from "../../firebase/firebaseAuth";
+import { auth, LogoutStaff } from "../../firebase/firebaseAuth";
 
 const Delivery = () => {
     return (

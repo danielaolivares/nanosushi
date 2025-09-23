@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { loginStaff, auth } from "../../firebase/firebaseAuth";
 import { useNavigate } from "react-router-dom";
+import { Button } from 'react-bootstrap';
+import '../../styles/login.css';
 
 
 const Login = () => {
@@ -14,13 +16,17 @@ const Login = () => {
             const userCredential = await loginStaff(auth, email, password);
             if (userCredential && userCredential.user) {
                 if (userCredential.user.email === "admin@nanosushi.cl") {
-                    navigate("/staff/dashboard");
-                } else {
-                    navigate("/staff/delivery");
+                    navigate("/dashboard");
+                }
+                else if (userCredential.user.email === "delivery@nanosushi.cl") {
+                    navigate("/delivery");
+                }
+                else {
+                    navigate("/"); // Redirigir a la página de inicio o a otra ruta
                 }
             }
         } catch (error) {
-            // Manejo de error opcional
+            console.error("Error al iniciar sesión:", error);
         }
         setEmail("");
         setPassword("");
@@ -28,17 +34,23 @@ const Login = () => {
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="exampleInputEmail1" className="form-label">Email address</label>
-                    <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
+            <form onSubmit={handleSubmit} className="mb-2 gap-2 main-login">
+                <div className="logo-image">
+                    <img src="https://aiplrokyinskfjeyrqrc.supabase.co/storage/v1/object/public/menu-images/logo_sushi.png" alt="Logo Nano Sushi" />
+                    <h2>Bienvenidos</h2>
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="exampleInputPassword1" className="form-label">Password</label>
-                    <input type="password" className="form-control" id="exampleInputPassword1" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <label htmlFor="InputEmail" className="form-label">Email</label>
+                    <input type="email" className="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Ingresa tu email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
-                <button type="submit" className="btn btn-primary">Enviar</button>
+                <div className="mb-3">
+                    <label htmlFor="InputPassword" className="form-label">Password</label>
+                    <input type="password" className="form-control" placeholder="Ingresa tu clave" id="InputPassword" value={password} onChange={(e) => setPassword(e.target.value)} />
+                </div>
+                <div className="d-grid gap-2">
+                    <Button type="submit" id="loginButton" className="btn" size="lg">Ingresar</Button>
+                </div>
+                
             </form>
         </>
     );

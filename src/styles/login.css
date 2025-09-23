@@ -1,0 +1,43 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-login{
+    background-color: rgba(217, 217, 217, 0.2);
+    border-radius: 10px;
+    padding: 50px 20px 30px;
+}
+
+#loginButton{
+    border-radius: 90px;
+    background-color: #FFFFFF;
+    color: #000000;
+}
+
+label{
+    color: #FFFFFF;
+}
+
+#InputEmail, #InputPassword{
+    background-color: #444867;
+    color: #FFFFFF;
+    padding: 15px 10px;
+}
+
+#InputEmail::placeholder, #InputPassword::placeholder{
+    color: #FFFFFF;
+    opacity: 1;
+}
+
+.logo-image{
+    text-align: center;
+    color: #FFFFFF;
+    margin-bottom: 20px;
+}
+
+.logo-image img{
+    border-radius: 10px;
+    margin-bottom: 20px;
+}

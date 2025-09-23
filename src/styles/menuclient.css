@@ -1,0 +1,56 @@
+body{
+     background-color: rgba(217, 217, 217, 0.2);
+}
+.navbar {
+  /* background-color: #333; */
+  padding: 0.5rem;
+  overflow-x: auto; /* Habilita scroll horizontal */
+  white-space: nowrap; /* Evita que los elementos salten de línea */
+  scrollbar-width: thin; /* Firefox */
+}
+
+/* Para Chrome, Edge y Safari */
+.navbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.navbar::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 10px;
+}
+
+.navbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.navbar-container {
+  display: flex;
+  gap: 1rem; /* Espacio entre enlaces */
+}
+
+/* Hover para feedback visual */
+.category-link:hover {
+  background-color: rgba(217, 217, 217, 0.2);
+  color: #f8d210;
+}
+
+/* Categoría activa */
+.active-category {
+  background-color: rgba(217, 217, 217, 0.2);
+  color: #000;
+  font-weight: bold;
+}
+
+.category-link {
+  color: #ffffff;
+  background-color: transparent;
+  border-radius: 20px;
+  padding: 0.4rem 1rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  flex-shrink: 0; /* evita que se encojan los botones */
+}
+
+#card-product{
+    background-color: rgba(217, 217, 217, 0.2);
+    color: #ffffff;
+}
