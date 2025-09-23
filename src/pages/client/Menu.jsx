@@ -44,8 +44,6 @@ const Menu = () => {
         <h1 className="text-white">Nuestro Menú</h1>
         <Navbar xs={6} sm={12}>
              <Container fluid className="navbar menu-navbar">
-                {/*<Navbar.Toggle aria-controls="filter-navbar"/>
-                <Navbar.Collapse id="filter-navbar">*/}
                     <Nav className="navbar-container category-nav">
                         {categories.map((categorie) => (
                             <Nav.Link 
@@ -60,37 +58,23 @@ const Menu = () => {
                             </Nav.Link>
                         ))}
                     </Nav>
-              {/*  </Navbar.Collapse>*/}
             </Container> 
         </Navbar>
         <Container fluid="sm" >
-             <Row 
-            //  xs={{span: 10, offset:1}} 
-            //  style={{ outline: '1px solid red'}}
-            //  sm={12} 
-            //  style={{ outline: '1px solid green', display: 'flex', justifyContent: 'center' }}
-             >
+             <Row>
                 {filteredProducts.length > 0 ? (
                     filteredProducts.map((product, index) => (
                         <Col key={index} 
                         xs={{ span: 10, offset:1 }} 
-                        className="mb-3"
-                        // style={{ outline: '1px solid yellow'}}
-                         >
+                        className="mb-3">
                             <Card 
                             xs={ 12 }
                             className="shadow-sm h-100" 
-                            id="card-product"
-
-                            >
+                            id="card-product">
                                <Row 
-                               xs={{span: 10, offset:1}}
-                            //    className="g-0 flex-nowrap flex-row"
-                               >
+                               xs={{span: 10, offset:1}}>
                                     <Col 
-                                    xs={4} 
-                                    // className="d-flex align-items-center"
-                                    >
+                                    xs={4}>
                                          <Card.Img
                                             id="product-image"
                                             src={product.imageUrl}
@@ -100,12 +84,8 @@ const Menu = () => {
                                         />
                                     </Col>
                                     <Col 
-                                    xs={8} 
-                                    // className="d-flex align-items-center" 
-                                    >
-                                       <Card.Body 
-                                    //    className="w-100 card-content" 
-                                       >
+                                    xs={8}>
+                                       <Card.Body>
                                         <Row>
                                             <Col style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                                 <Card.Title className="mb-2" style={{ display: 'inline-block'}}>{product.name}</Card.Title>
@@ -118,8 +98,6 @@ const Menu = () => {
                                             </Col>
                                         </Row>
                                             {/* 
-                                            
-                                            
                                             <Button className="btn mt-2" id={product.id}>Agregar al Carro</Button>*/}
                                         </Card.Body>
                                     </Col>
