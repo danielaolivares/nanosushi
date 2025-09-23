@@ -7,7 +7,10 @@ import '../../styles/menuclient.css';
 const Menu = () => {
     const [products, setProducts] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("all");
-    
+    const  [cart, setCart] = useState({});
+
+    console.log("Cart:", cart);
+
     //obtenemos productos desde Firebase una sola vez
     useEffect(() => {
         const fetchData = async () => {       
@@ -37,6 +40,31 @@ const Menu = () => {
         {key: "9", label: "Extras"},
         {key: "10", label: "Gohan"},
     ];
+
+    // Aumenta la cantidad de un producto
+    const handleAddToCart = (productId) => {
+        setCart((prevCart) => ({
+            ...prevCart,
+            [productId]: (prevCart[productId] || 0) + 1
+        }));
+    };
+    // Disminuir la cantidad de un producto
+    const handleRemoveFromCart = (productId) => {
+        setCart((prevCart) => {
+            if (!prevCart[productId]) return prevCart;
+            const updatedCart = {...prevCart};
+            updatedCart[productId] -= 1;
+
+            if (updatedCart[productId] === 0){
+                delete updatedCart[productId];
+            }
+            return updatedCart;
+        });
+    };
+    //obtenemos la cantidad actual de un producto
+    const getProductQuantity = (productId) => {
+        return cart[productId] || 0;
+    };
 
     return (
         <Container fluid="sm">
@@ -93,12 +121,19 @@ const Menu = () => {
                                             </Col>
                                         </Row>
                                         <Row>
-                                            <Col>
-                                            <Card.Text className="mb-2" style={{color: '#FFFFFF'}}>{product.description}</Card.Text>
+                                            <Col xs={10}>
+                                                <Card.Text className="mb-2" style={{color: '#FFFFFF'}}>{product.description}</Card.Text>
                                             </Col>
+                                            <Col xs={2} className="add-cart">
+                                                <Button 
+                                                onClick={() => handleRemoveFromCart(product.id)}
+                                                disabled={getProductQuantity(product.id) === 0}>-</Button>
+                                                <span>{getProductQuantity(product.id)}</span>
+                                                <Button
+                                                onClick={() => handleAddToCart(product.id)}
+                                                >+</Button>
+                                            </Col>      
                                         </Row>
-                                            {/* 
-                                            <Button className="btn mt-2" id={product.id}>Agregar al Carro</Button>*/}
                                         </Card.Body>
                                     </Col>
                                 </Row>
