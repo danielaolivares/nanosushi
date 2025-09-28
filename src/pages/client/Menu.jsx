@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { readProducts } from "../../firebase/firebaseFirestore";
 import { Button, Card, Container, Row, Col, Navbar, Nav } from 'react-bootstrap';
+import { FaShoppingCart } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import '../../styles/menuclient.css';
-// import '../../styles/menu.css';
 
-const Menu = () => {
+const Menu = ({cart, setCart}) => {
     const [products, setProducts] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("all");
-    const  [cart, setCart] = useState({});
 
-    console.log("Cart:", cart);
+    // Obtener cantidad total en el carrito
+  const totalItems = Object.values(cart).reduce((acc, item) => acc + item.quantity, 0);
 
     //obtenemos productos desde Firebase una sola vez
     useEffect(() => {
@@ -41,33 +42,61 @@ const Menu = () => {
         {key: "10", label: "Gohan"},
     ];
 
-    // Aumenta la cantidad de un producto
-    const handleAddToCart = (productId) => {
-        setCart((prevCart) => ({
-            ...prevCart,
-            [productId]: (prevCart[productId] || 0) + 1
-        }));
+    const handleAddToCart = (product) => {
+  setCart((prevCart) => {
+    const currentProduct = prevCart[product.id] || {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 0
     };
-    // Disminuir la cantidad de un producto
-    const handleRemoveFromCart = (productId) => {
-        setCart((prevCart) => {
-            if (!prevCart[productId]) return prevCart;
-            const updatedCart = {...prevCart};
-            updatedCart[productId] -= 1;
 
-            if (updatedCart[productId] === 0){
-                delete updatedCart[productId];
-            }
-            return updatedCart;
-        });
+    return {
+      ...prevCart,
+      [product.id]: {
+        ...currentProduct,
+        quantity: currentProduct.quantity + 1
+      }
     };
-    //obtenemos la cantidad actual de un producto
+  });
+};
+
+    const handleRemoveFromCart = (productId) => {
+  setCart((prevCart) => {
+    const currentProduct = prevCart[productId];
+    if (!currentProduct) return prevCart;
+
+    const updatedQuantity = currentProduct.quantity - 1;
+
+    if (updatedQuantity <= 0) {
+      // Eliminar el producto del carrito si llega a 0
+      const { [productId]: _, ...rest } = prevCart;
+      return rest;
+    }
+
+    return {
+      ...prevCart,
+      [productId]: {
+        ...currentProduct,
+        quantity: updatedQuantity
+      }
+    };
+  });
+};
+
     const getProductQuantity = (productId) => {
-        return cart[productId] || 0;
-    };
+  return cart[productId]?.quantity || 0;
+};
 
     return (
         <Container fluid="sm">
+            {/* Ícono del carrito con badge */}
+        <Link to="/cart" className="cart-icon">
+          <FaShoppingCart size={28} color="#fff" />
+          {totalItems > 0 && (
+            <span className="cart-badge">{totalItems}</span>
+          )}
+        </Link>
         {/*Navbar para filtrar*/}
         <h1 className="text-white">Nuestro Menú</h1>
         <Navbar xs={6} sm={12}>
@@ -129,9 +158,10 @@ const Menu = () => {
                                                 onClick={() => handleRemoveFromCart(product.id)}
                                                 disabled={getProductQuantity(product.id) === 0}>-</Button>
                                                 <span>{getProductQuantity(product.id)}</span>
-                                                <Button
+                                                {/* <Button
                                                 onClick={() => handleAddToCart(product.id)}
-                                                >+</Button>
+                                                >+</Button> */}
+                                                <Button onClick={() => handleAddToCart(product)}>+</Button>
                                             </Col>      
                                         </Row>
                                         </Card.Body>
