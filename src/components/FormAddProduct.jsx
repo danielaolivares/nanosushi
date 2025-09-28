@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { addProduct } from "../firebase/firebaseFirestore";
+import { addProductAndRecipe } from "../firebase/firebaseFirestore";
 import { useAuth } from "../context/AuthContext";
 
 
@@ -15,6 +15,8 @@ const FormAddProduct = () => {
         availability: false,
         imageUrl: null,
     });
+    
+    const [ingredients, setIngredients] = useState([]);
 
      const handleChange = (e) => {
         const { name, value, type, checked, files } = e.target;
@@ -25,6 +27,25 @@ const FormAddProduct = () => {
         }));
     };
 
+    // Añadir un nuevo ingrediente vacío
+  const handleAddIngredient = () => {
+    setIngredients([...ingredients, { ingredientId: "", quantity: 0 }]);
+  };
+
+   // Eliminar un ingrediente por índice
+  const handleRemoveIngredient = (index) => {
+    const updated = [...ingredients];
+    updated.splice(index, 1);
+    setIngredients(updated);
+  };
+
+  // Actualizar datos de un ingrediente
+  const handleIngredientChange = (index, field, value) => {
+    const updated = [...ingredients];
+    updated[index][field] = field === "quantity" ? parseFloat(value) : value;
+    setIngredients(updated);
+  };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -32,22 +53,47 @@ const FormAddProduct = () => {
             alert("No hay usuario logueado, no se puede agregar producto")
             return;
         }
-       
         setLoading(true);
 
-        await addProduct({    
-            ...product, 
-            createdBy: user.email });
+    try {
+      // Agrega el campo createdBy al producto
+      const productWithCreator = { ...product, createdBy: user.email };
+      await addProductAndRecipe({
+        product: productWithCreator,
+        ingredients,
+      });
+      alert("Producto y receta guardados correctamente");
+      // Reiniciar formulario
+      setProduct({
+        name: "",
+        description: "",
+        price: 0,
+        category: "",
+        availability: false,
+        imageUrl: null,
+      });
+      setIngredients([]);
+    } catch (error) {
+      console.error("Error al guardar producto:", error);
+      alert("Hubo un error al guardar el producto y la receta");
+    } finally {
+      setLoading(false);
+    }
+        }
 
-        setProduct({
-            name: "",
-            description: "",
-            price: 0,
-            category: "",
-            availability: false,
-            imageUrl: null,
-        });
-    };
+        // await addProduct({    
+        //     ...product, 
+        //     createdBy: user.email });
+
+        // setProduct({
+        //     name: "",
+        //     description: "",
+        //     price: 0,
+        //     category: "",
+        //     availability: false,
+        //     imageUrl: null,
+        // });
+
 
     // Mostrar loader si la sesión se está estableciendo
     if (user === null) {
@@ -107,6 +153,51 @@ const FormAddProduct = () => {
                 />
                 <label className="form-check-label" htmlFor="switchAvailability">Disponible</label>
             </div>
+            {/* Ingredientes dinámicos */}
+      <h4>Ingredientes (opcional)</h4>
+      {ingredients.map((ingredient, index) => (
+        <div key={index} className="d-flex align-items-center mb-2">
+          <input
+            type="text"
+            placeholder="Ingrediente (ej: arroz, nori)"
+            className="form-control me-2"
+            value={ingredient.ingredientId}
+            onChange={(e) =>
+              handleIngredientChange(index, "ingredientId", e.target.value)
+            }
+            required
+          />
+          <input
+            type="number"
+            step="0.01"
+            placeholder="Cantidad"
+            className="form-control me-2"
+            style={{ maxWidth: "100px" }}
+            value={ingredient.quantity}
+            onChange={(e) =>
+              handleIngredientChange(index, "quantity", e.target.value)
+            }
+            required
+          />
+          <button
+            type="button"
+            className="btn btn-danger"
+            onClick={() => handleRemoveIngredient(index)}
+          >
+            ❌
+          </button>
+        </div>
+      ))}
+
+      <button
+        type="button"
+        className="btn btn-secondary mb-3"
+        onClick={handleAddIngredient}
+      >
+        + Agregar Ingrediente
+      </button>
+
+      <br />
              <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? "Subiendo...": "Subir Producto"}</button>
         </form>
     );
