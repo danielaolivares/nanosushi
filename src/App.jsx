@@ -17,8 +17,21 @@ export default function AppRouter() {
     <Routes>
       {/* <Route path="/" element={<Home />} />
       <Route path="/menu" element={<Menu />} /> */}
-      <Route path="/checkout" element={<CheckoutPage cart={cart} setCart={setCart} deliveryMethod={deliveryMethod} setDeliveryMethod={setDeliveryMethod} deliveryCost={deliveryCost} />} />
-      <Route path="/cart" element={<CartPage cart={cart} setCart={setCart} deliveryMethod={deliveryMethod} setDeliveryMethod={setDeliveryMethod} />} />
+      <Route path="/checkout" element={
+        <CheckoutPage 
+        cart={cart} 
+        setCart={setCart} 
+        deliveryMethod={deliveryMethod} 
+        deliveryCost={deliveryCost} />
+        } />
+      <Route path="/cart" element={
+        <CartPage 
+          cart={cart} 
+          setCart={setCart} 
+          deliveryMethod={deliveryMethod} 
+          setDeliveryMethod={setDeliveryMethod} 
+        />
+        } />
       <Route path="/login" element={<Login />} />
       <Route path="/delivery" element={<Delivery />} />
       <Route path="/dashboard" element={<Dashboard />} />

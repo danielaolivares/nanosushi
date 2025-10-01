@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Container, Form, Button, Card, Row, Col } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const total = deliveryMethod === "delivery" ? subtotal + deliveryCost : subtotal;
-
+console.log(deliveryMethod);
   // Actualiza el estado del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -61,6 +61,7 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
 
   return (
     <Container className="mt-4">
+      <Link to="/cart" className="btn btn-secondary mb-3">← volver al carrito</Link>
       <h2 className="text-white">Datos para tu Pedido</h2>
 
       <Form onSubmit={handleSubmit} className="text-white">
@@ -150,7 +151,7 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
           <p><strong>RUT:</strong> 76.123.456-7</p>
           <p><strong>Email:</strong> pedidos@sushi.cl</p>
           <p>
-            Envía el comprobante de transferencia a nuestro WhatsApp:{" "}
+            Para que tu pedido sea confirmado debes envíar el comprobante de transferencia a nuestro WhatsApp:{" "}
             <a href="https://wa.me/56912345678" target="_blank" rel="noopener noreferrer">
               +56 9 1234 5678
             </a>

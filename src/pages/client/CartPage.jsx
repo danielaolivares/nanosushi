@@ -1,11 +1,10 @@
-import { useState } from 'react';
+//import { useState } from 'react';
 import { Button, Card, Container, Form } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import Cart from '../../components/Cart';
 import '../../styles/cartPages.css';
 
-const CartPage = ({ cart, setCart }) => {
-  const [deliveryMethod, setDeliveryMethod] = useState("pickup");
+const CartPage = ({ cart, setCart, deliveryMethod, setDeliveryMethod }) => {
   const navigate = useNavigate();
   const deliveryCost = 2000;
   // Convertimos el carrito en array para iterar fácilmente
