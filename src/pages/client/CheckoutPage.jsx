@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Container, Form, Button, Card, Row, Col } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
+import { collection, addDoc } from "firebase/firestore";
+import { db } from '../../firebase/firebaseFirestore';
 
 const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
   const navigate = useNavigate();
@@ -15,7 +17,7 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const total = deliveryMethod === "delivery" ? subtotal + deliveryCost : subtotal;
-console.log(deliveryMethod);
+
   // Actualiza el estado del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,7 +28,7 @@ console.log(deliveryMethod);
   };
 
   // Enviar el pedido
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validación rápida
@@ -50,13 +52,20 @@ console.log(deliveryMethod);
       createdAt: new Date().toISOString(),
     };
 
-    console.log("Pedido confirmado:", order);
+    try {
+      const docRef = await addDoc(collection(db, "orders"), order);
 
-    // Limpiar carrito
-    setCart({});
+      console.log("Pedido guardado con ID:", docRef.id);
 
-    // Navegar a página de confirmación visual
-    navigate("/order-confirmation", { state: { order } });
+      // Limpiar carrito
+      setCart({});
+
+      // Navegar con ID de la orden
+      navigate("/order-confirmation", { state: { orderId: docRef.id } });
+    } catch (err) {
+      console.error("Error guardando el pedido:", err);
+      alert("Hubo un problema al procesar tu pedido. Intenta nuevamente.");
+    }
   };
 
   return (

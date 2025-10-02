@@ -6,11 +6,15 @@ const Dashboard = () => {
     const handleAddProduct = () => {
         navigate("/add-product");
     };
+    const handleOrders = () => {
+        navigate("/admin-orders");
+    };
 
     return(
         <>
         <h1>Este es un dashboard para el staff</h1>
         <button onClick={handleAddProduct}>Agregar Producto</button>
+        <button onClick={handleOrders}>Administrar Pedidos</button>
         <button onClick={() => LogoutStaff(auth)}>Cerrar Sesión</button>
         </>
     );

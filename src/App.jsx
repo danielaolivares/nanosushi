@@ -7,6 +7,8 @@ import Delivery from "./pages/staff/Delivery.jsx";
 import NewProduct from "./pages/staff/NewProduct.jsx";
 import CartPage from "./pages/client/CartPage.jsx";
 import CheckoutPage from "./pages/client/CheckoutPage.jsx";
+import OrderConfirmationPage from "./pages/client/OrderConfirmationPage.jsx";
+import AdminOrders from "./pages/staff/AdminOrders.jsx";
 
 export default function AppRouter() {
   const [cart, setCart] = useState([]);
@@ -17,6 +19,11 @@ export default function AppRouter() {
     <Routes>
       {/* <Route path="/" element={<Home />} />
       <Route path="/menu" element={<Menu />} /> */}
+      <Route 
+      path="/order-confirmation" 
+      element={<OrderConfirmationPage 
+      />} 
+      />
       <Route path="/checkout" element={
         <CheckoutPage 
         cart={cart} 
@@ -32,6 +39,7 @@ export default function AppRouter() {
           setDeliveryMethod={setDeliveryMethod} 
         />
         } />
+      <Route path="/admin-orders" element={<AdminOrders />} />
       <Route path="/login" element={<Login />} />
       <Route path="/delivery" element={<Delivery />} />
       <Route path="/dashboard" element={<Dashboard />} />
