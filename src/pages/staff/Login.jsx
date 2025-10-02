@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { loginStaff, auth } from "../../firebase/firebaseAuth";
 import { useNavigate } from "react-router-dom";
-import { Button } from 'react-bootstrap';
+import { Button, Container, Row, Col } from 'react-bootstrap';
 import '../../styles/login.css';
 
 
@@ -33,26 +33,31 @@ const Login = () => {
     };
 
     return (
-        <>
-            <form onSubmit={handleSubmit} className="mb-2 gap-2 main-login">
-                <div className="logo-image">
-                    <img src="https://aiplrokyinskfjeyrqrc.supabase.co/storage/v1/object/public/menu-images/logo_sushi.png" alt="Logo Nano Sushi" />
-                    <h2>Bienvenidos</h2>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="InputEmail" className="form-label">Email</label>
-                    <input type="email" className="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Ingresa tu email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="InputPassword" className="form-label">Password</label>
-                    <input type="password" className="form-control" placeholder="Ingresa tu clave" id="InputPassword" value={password} onChange={(e) => setPassword(e.target.value)} />
-                </div>
-                <div className="d-grid gap-2">
-                    <Button type="submit" id="loginButton" className="btn" size="lg">Ingresar</Button>
-                </div>
-                
-            </form>
-        </>
+        <Container fluid className="d-flex justify-content-center align-items-center min-vh-100">
+            <Row className="my-3">
+                <Col>
+                    <form onSubmit={handleSubmit} 
+                    className="main-login"
+                    >
+                        <div className="logo-image">
+                            <img src="https://aiplrokyinskfjeyrqrc.supabase.co/storage/v1/object/public/menu-images/logo_sushi.png" alt="Logo Nano Sushi" />
+                            <h2>Bienvenidos</h2>
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="InputEmail" className="form-label">Email</label>
+                            <input type="email" className="form-control" id="InputEmail" aria-describedby="emailHelp" placeholder="Ingresa tu email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="InputPassword" className="form-label">Password</label>
+                            <input type="password" className="form-control" placeholder="Ingresa tu clave" id="InputPassword" value={password} onChange={(e) => setPassword(e.target.value)} />
+                        </div>
+                        <div className="d-grid gap-2">
+                            <Button type="submit" id="loginButton" className="btn" size="lg">Ingresar</Button>
+                        </div>
+                    </form>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 
