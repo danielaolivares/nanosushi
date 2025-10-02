@@ -1,13 +1,6 @@
 body{
      background-color: rgba(217, 217, 217, 0.2);
 }
-.navbar {
-  /* background-color: #333; */
-  padding: 0.5rem;
-  overflow-x: auto; /* Habilita scroll horizontal */
-  white-space: nowrap; /* Evita que los elementos salten de línea */
-  scrollbar-width: thin; /* Firefox */
-}
 
 /* Para Chrome, Edge y Safari */
 .navbar::-webkit-scrollbar {
@@ -55,13 +48,6 @@ body{
     color: #ffffff;
 }
 
-.add-cart {
-  
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .add-cart button {
   background-color: transparent;
   border: none;
@@ -98,4 +84,10 @@ body{
   padding: 2px 6px;
   font-size: 12px;
   font-weight: bold;
+}
+
+@media (min-width: 768px) {
+  #card-product img {
+    max-height: 120px; /* en desktop lo restringes */
+  }
 }

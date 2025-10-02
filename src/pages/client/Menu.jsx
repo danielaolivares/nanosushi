@@ -89,96 +89,95 @@ const Menu = ({cart, setCart}) => {
 };
 
     return (
-        <Container fluid="sm">
-            {/* Ícono del carrito con badge */}
-        <Link to="/cart" className="cart-icon">
-          <FaShoppingCart size={28} color="#fff" />
-          {totalItems > 0 && (
-            <span className="cart-badge">{totalItems}</span>
-          )}
-        </Link>
-        {/*Navbar para filtrar*/}
-        <h1 className="text-white">Nuestro Menú</h1>
-        <Navbar xs={6} sm={12}>
-             <Container fluid className="navbar menu-navbar">
-                    <Nav className="navbar-container category-nav">
-                        {categories.map((categorie) => (
-                            <Nav.Link 
-                            className={`category-link text-white nav-item ${
-                    selectedCategory === categorie.key ? "active-category" : ""
-                  }`}
-                            key={categorie.key} 
-                            active={selectedCategory === categorie.key}
-                            onClick={() => setSelectedCategory(categorie.key)}
-                            >
-                                {categorie.label}
-                            </Nav.Link>
-                        ))}
-                    </Nav>
-            </Container> 
-        </Navbar>
-        <Container fluid="sm" >
-             <Row>
-                {filteredProducts.length > 0 ? (
-                    filteredProducts.map((product, index) => (
-                        <Col key={index} 
-                        xs={{ span: 10, offset:1 }} 
-                        className="mb-3">
-                            <Card 
-                            xs={ 12 }
-                            className="shadow-sm h-100" 
-                            id="card-product">
-                               <Row 
-                               xs={{span: 10, offset:1}}>
-                                    <Col 
-                                    xs={4}>
-                                         <Card.Img
-                                            id="product-image"
-                                            src={product.imageUrl}
-                                            alt={product.name}
-                                            className="img-fluid card-img"
-                                            style={{ objectFit: 'cover', width: '100%', maxHeight: '120px', borderRadius: '8px' }}
-                                        />
-                                    </Col>
-                                    <Col 
-                                    xs={8}>
-                                       <Card.Body>
-                                        <Row>
-                                            <Col style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                                <Card.Title className="mb-2" style={{ display: 'inline-block'}}>{product.name}</Card.Title>
-                                                <Card.Text style={{ display: 'inline-block'}}><strong>$ {product.price}</strong></Card.Text>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col xs={10}>
-                                                <Card.Text className="mb-2" style={{color: '#FFFFFF'}}>{product.description}</Card.Text>
-                                            </Col>
-                                            <Col xs={2} className="add-cart">
-                                                <Button 
-                                                onClick={() => handleRemoveFromCart(product.id)}
-                                                disabled={getProductQuantity(product.id) === 0}>-</Button>
-                                                <span>{getProductQuantity(product.id)}</span>
-                                                {/* <Button
-                                                onClick={() => handleAddToCart(product.id)}
-                                                >+</Button> */}
-                                                <Button onClick={() => handleAddToCart(product)}>+</Button>
-                                            </Col>      
-                                        </Row>
-                                        </Card.Body>
-                                    </Col>
-                                </Row>
-                            </Card>
-                        </Col>
-                    ))
-                ) : (
-                    <Col>
-                        <p className="text-center">
-                            No hay productos disponibles en esta categoría
-                        </p>
-                    </Col>
+        <Container fluid="md">
+          <Row className="align-items-center" style={{marginTop: '20px', color: '#FFFFFF'}}>
+            <Col xs={10}>
+              <h1>Nuestro Menú</h1>
+            </Col>
+            <Col xs={2}>
+              <Link to="/cart" className="cart-icon">
+                <FaShoppingCart size={28} color="#fff" />
+                {totalItems > 0 && (
+                <span className="cart-badge">{totalItems}</span>
                 )}
-            </Row> 
-        </Container>
+              </Link>
+            </Col>
+          </Row>
+          <Row style={{ marginTop: '20px' }}>
+            <Col>
+              <Nav className="d-flex flex-nowrap overflow-auto" style={{ whiteSpace: 'nowrap' }}>
+                {categories.map((categorie) => (
+                  <Nav.Link
+                  className={`category-link text-white ${selectedCategory === categorie.key ? "active-category": ""}`}
+                  key={categorie.key}
+                  active={selectedCategory === categorie.key}
+                  onClick={()=> setSelectedCategory(categorie.key)}
+                  >
+                    {categorie.label}
+                  </Nav.Link>
+                ))}
+              </Nav>
+            </Col>
+          </Row>
+          <Row style={{ marginTop: '20px'}}>
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product, index) => (
+                <Col 
+                key={index}
+                xs={{span:12}}
+                md={{span:10, offset:1}}
+                className="mb-3"
+                >
+                  <Card xs={12}
+                  className="shadow-sm h-100"
+                  id="card-product"
+                  >
+                    <Row>
+                      <Col xs={4}>
+                      <Card.Img 
+                      src={product.imageUrl}
+                      alt={product.name}
+                      style={{ objectFit: 'cover', width: '100%', height: '200px', borderRadius: '8px' }}
+                      />
+                      </Col>
+                      <Col xs={8} className="py-2 py-md-3">
+                      <Row >
+                        <Col md={9} xs={12}>
+                          <Card.Title >
+                            {product.name}
+                          </Card.Title>
+                          <Card.Text>
+                            {product.description}
+                          </Card.Text>
+                        </Col>
+                        <Col md={3} xs={12} className="add-cart">
+                          <Card.Text>
+                            <strong>
+                              ${product.price}
+                            </strong>
+                          </Card.Text>
+                          <Button
+                            onClick={() => handleRemoveFromCart(product.id)}
+                            disabled={getProductQuantity(product.id) === 0}
+                            >-</Button>
+                          <span className="p-2">{getProductQuantity(product.id)}</span>
+                          <Button onClick={() => handleAddToCart(product)}>+</Button>
+                        </Col>
+                      </Row>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+              ))
+            ): (
+              <Col>
+                <h2 className="text-center text-white">
+                    No hay productos disponibles en esta categoría
+                </h2>
+              </Col>
+            )
+          }
+          </Row>
         </Container>
     )
 };

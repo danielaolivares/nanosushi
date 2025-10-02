@@ -2,13 +2,14 @@
   box-sizing: border-box;
 }
 
+
 /* Fondo que cubre toda la pantalla */
-body {
+/* body {
   min-height: 100vh;
   background-size: cover;
   background-repeat: no-repeat;
    overflow-x: hidden;
-}
+} */
 
 .text-white{
     color: #FFFFFF;

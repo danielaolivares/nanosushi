@@ -9,6 +9,7 @@ import CartPage from "./pages/client/CartPage.jsx";
 import CheckoutPage from "./pages/client/CheckoutPage.jsx";
 import OrderConfirmationPage from "./pages/client/OrderConfirmationPage.jsx";
 import AdminOrders from "./pages/staff/AdminOrders.jsx";
+import AdminIngredient from "./pages/staff/AdminIngredientsPage.jsx";
 
 export default function AppRouter() {
   const [cart, setCart] = useState([]);
@@ -19,6 +20,10 @@ export default function AppRouter() {
     <Routes>
       {/* <Route path="/" element={<Home />} />
       <Route path="/menu" element={<Menu />} /> */}
+      <Route 
+      path="/admin-ingredients" 
+      element={<AdminIngredient />} 
+      />
       <Route 
       path="/order-confirmation" 
       element={<OrderConfirmationPage 
