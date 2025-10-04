@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { addProductAndRecipe } from "../firebase/firebaseFirestore";
 import { useAuth } from "../context/AuthContext";
+import "../styles/addProducts.css";
 
 
 const FormAddProduct = () => {
@@ -81,20 +82,6 @@ const FormAddProduct = () => {
     }
         }
 
-        // await addProduct({    
-        //     ...product, 
-        //     createdBy: user.email });
-
-        // setProduct({
-        //     name: "",
-        //     description: "",
-        //     price: 0,
-        //     category: "",
-        //     availability: false,
-        //     imageUrl: null,
-        // });
-
-
     // Mostrar loader si la sesión se está estableciendo
     if (user === null) {
         return <div>Verificando sesión...</div>;
@@ -154,7 +141,7 @@ const FormAddProduct = () => {
                 <label className="form-check-label" htmlFor="switchAvailability">Disponible</label>
             </div>
             {/* Ingredientes dinámicos */}
-      <h4>Ingredientes (opcional)</h4>
+      <h4 className="mt-4" style={{ color: '#FFFFFF'}}>Ingredientes</h4>
       {ingredients.map((ingredient, index) => (
         <div key={index} className="d-flex align-items-center mb-2">
           <input
@@ -198,7 +185,7 @@ const FormAddProduct = () => {
       </button>
 
       <br />
-             <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? "Subiendo...": "Subir Producto"}</button>
+             <button type="submit" className="btn btn-primary my-5" disabled={loading}>{loading ? "Subiendo...": "Subir Producto"}</button>
         </form>
     );
 };
