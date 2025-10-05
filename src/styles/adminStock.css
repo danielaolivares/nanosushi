@@ -1,0 +1,17 @@
+.edit-btn {
+  /* Por defecto, posición normal */
+  position: static;
+}
+/* En mobile, posición absoluta en la esquina superior derecha de la card */
+@media (max-width: 767.98px) {
+  .edit-btn {
+    position: absolute !important;
+    top: 10px;
+    right: 10px;
+    z-index: 2;
+  }
+
+  .card-stock {
+    position: relative;
+  }
+}
