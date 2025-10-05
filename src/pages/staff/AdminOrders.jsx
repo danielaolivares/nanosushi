@@ -90,6 +90,7 @@ const AdminOrders = () => {
         });
       }
     };
+  };
     // Confirmar pedido (cambia status y descuenta stock si corresponde)
     const handleConfirm = async (orderId) => {
       setProcessingId(orderId);
@@ -243,6 +244,6 @@ const AdminOrders = () => {
       </Container>
     );
   };
-};
+
 
 export default AdminOrders;
