@@ -122,7 +122,7 @@ const AdminStockPage = () => {
   }, {});
 
   return (
-    <Container fluid className="mt-4">
+    <Container className="mt-4">
       <Row 
       className="d-flex flex-direction-row justify-content-between align-items-center my-3"
       style={{ color: "#FFFFFF"}}
