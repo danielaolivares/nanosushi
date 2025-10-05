@@ -157,6 +157,7 @@ const AdminOrders = () => {
           </Col>
       </Row>
       <h2 className="text-white">📋 Pedidos</h2>
+      <Row>
       {orders.length === 0 
         ? (
           <p className="text-white">No hay pedidos.</p>
@@ -166,7 +167,8 @@ const AdminOrders = () => {
               const deliveryCost = order.deliveryMethod === "delivery" ? 2000 : 0;
               const total = subtotal + deliveryCost;
               return (
-                <Card key={order.id} className="p-3 mb-3 bg-dark text-white">
+                <Col xs={12} md={4} key={order.id}>
+                <Card key={order.id}  className="p-3 mb-3 bg-dark text-white">
                   <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
                     <div>
                       <h5>{order.customer?.name || "Cliente"}</h5>
@@ -186,7 +188,7 @@ const AdminOrders = () => {
                             order.status === "confirmed" ? "#4ade80" :
                             order.status === "rejected" ? "#f87171" : "#fbbf24"
                         }}>
-                          {order.status}
+                          {order.status === "confirmed"? "Confirmado": order.status === "rejected"? "Rechazado": "Pendiente"}
                         </span>
                       </p>
                       <p style={{ margin: 0, fontSize: 12, opacity: 0.8 }}>
@@ -209,7 +211,7 @@ const AdminOrders = () => {
                       <>
                         <Button
                           variant="success"
-                          className="me-2"
+                          className="me-2 my-3"
                           onClick={() => handleConfirm(order.id)}
                           disabled={processingId === order.id}
                         >
@@ -237,10 +239,12 @@ const AdminOrders = () => {
                     )}
                   </div>
                 </Card>
+                </Col>
               )
             })
           )
         }
+        </Row>
       </Container>
     );
   };
