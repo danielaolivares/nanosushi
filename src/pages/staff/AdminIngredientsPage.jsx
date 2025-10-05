@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
 import { convertToBaseUnit } from "../../utils/UnitConversion";
 import StockForm from "../../components/StockForm";
+import '../../styles/adminStock.css';
 dayjs.extend(isoWeek);
 
 const AdminStockPage = () => {
@@ -121,7 +122,7 @@ const AdminStockPage = () => {
   }, {});
 
   return (
-    <Container className="mt-4">
+    <Container fluid className="mt-4">
       <Row 
       className="d-flex flex-direction-row justify-content-between align-items-center my-3"
       style={{ color: "#FFFFFF"}}
@@ -144,27 +145,34 @@ const AdminStockPage = () => {
         .sort((a, b) => b - a)
         .map((week) => (
           <Card key={week} className="mb-3 p-3">
-            <h4 style={{ display:"inline"}}>Semana {weekNumber}</h4>
-            <span style={{fontWeight: "normal", fontSize: "1rem"}}>
+            <Row>
+              <Col md={4} className="mt-2 mb-3">
+            <h4 style={{ display:"inline"}}>Semana {weekNumber} /<span style={{fontWeight: "normal", fontSize: "1rem", display:"inline"}}>
               ( {monday.format("DD MMM")} - {sunday.format("DD MMM")})
-            </span>
-            {stockByWeek[week].map((item) => (
-              <Row key={item.id} className="align-items-center mb-2">
-                <Col xs={1}>{getStockColor(item)}</Col>
-                <Col xs={3}>{item.ingredientName}</Col>
-                <Col xs={2}>
-                  {item.quantity} {item.unit} <br />
+            </span></h4>
+            </Col>
+            </Row>
+            {stockByWeek[week].map((item, idx) => (
+              <Row key={item.id} className={`align-items-center mb-2 d-flex flex-column flex-md-row card-stock card-stock-row border-bottom custom-separator 
+              ${idx === stockByWeek[week].length - 1 ? "last-row" : ""}`}
+              style={{ paddingBottom: 12 }}>
+                <Col xs={12} md={3}><strong>{getStockColor(item)} {item.ingredientName}</strong></Col>
+                <Col xs={12} md={6}>
+                 <strong style={{color:"#6C757D"}}> {item.quantity} {item.unit} </strong> <br />
                   <small>
                     Inicial: {item.initialQuantity} {item.unit} | Agregado: {item.addedQuantities?.join(", ") || 0} {item.unit}
                   </small>
                 </Col>
-                <Col xs={2}>
-                  Alerta: {item.lowStockThreshold || 0} {item.lowStockUnit || item.unit}
+                <Col xs={12} md={2}>
+                  <small>
+                    Alerta: <strong style={{color:"#6C757D"}}>{item.lowStockThreshold || 0} {item.lowStockUnit || item.unit}</strong>
+                  </small>
                 </Col>
-                <Col xs={2}>
+                <Col xs={1}>
                   <Button
                     variant="outline-primary"
                     size="sm"
+                    className="edit-btn"
                     onClick={() => handleOpenModal(item)}
                   >
                     <FaEdit />
