@@ -1,15 +1,14 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Container, Card, Row, Col, Button, Modal, Form } from "react-bootstrap";
+import { FaEdit, FaAngleLeft } from "react-icons/fa";
 import { db } from "../../firebase/firebaseFirestore";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { auth, LogoutStaff } from "../../firebase/firebaseAuth";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
-import { FaEdit, FaAngleLeft } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import { convertToBaseUnit } from "../../utils/UnitConversion";
 import StockForm from "../../components/StockForm";
-
 dayjs.extend(isoWeek);
 
 const AdminStockPage = () => {
@@ -35,7 +34,16 @@ const AdminStockPage = () => {
 
   // Callback que llamará StockForm al agregar un nuevo ingrediente
   const handleAddNewIngredient = (newItem) => {
-    setStock((prev) => [newItem, ...prev]);
+    setStock((prev) => {
+      const exists = prev.find(item => item.id === newItem.id);
+      if (exists) {
+        // Reemplaza el existente
+        return prev.map(item => item.id === newItem.id ? newItem : item);
+      } else {
+        // Agrega uno nuevo
+        return [newItem, ...prev];
+      }
+    });
   };
 
   // Abrir modal de edición
@@ -56,11 +64,11 @@ const AdminStockPage = () => {
   const handleSaveChanges = async () => {
     if (!currentItem) return;
     // Convertir la cantidad ingresada a la unidad base del ingrediente
-  const addAmountBase = convertToBaseUnit(
-    currentItem.addAmount,
-    currentItem.addAmountUnit || currentItem.unit,
-    currentItem.unit // unit base guardada en el stock
-  );
+    const addAmountBase = convertToBaseUnit(
+      currentItem.addAmount,
+      currentItem.addAmountUnit || currentItem.unit,
+      currentItem.unit // unit base guardada en el stock
+    );
     if (addAmountBase <= 0) {
       alert("Ingresa una cantidad válida para agregar.");
       return;
@@ -71,10 +79,8 @@ const AdminStockPage = () => {
     const newQuantity =
     Number(currentItem.initialQuantity || 0) +
     newAddedQuantities.reduce((a, b) => a + b, 0);
-    // const initialQuantity = Number(currentItem.initialQuantity || 0);
-    // const totalAdded = currentItem.addedQuantities?.reduce((a, b) => a + b, 0) || 0;
-
     const stockRef = doc(db, "stock", currentItem.id);
+
     await updateDoc(stockRef, {
       addedQuantities: newAddedQuantities,
       quantity: newQuantity,
@@ -85,19 +91,18 @@ const AdminStockPage = () => {
 
     // Actualizar estado local
     setStock((prev) =>
-    prev.map((s) =>
-      s.id === currentItem.id
-        ? {
-            ...currentItem,
-            addedQuantities: newAddedQuantities,
-            quantity: newQuantity,
-            addAmount: "", // limpia el campo
-            addAmountUnit: currentItem.unit,
-          }
-        : s
-    )
-  );
-
+      prev.map((s) =>
+        s.id === currentItem.id
+          ? {
+              ...currentItem,
+              addedQuantities: newAddedQuantities,
+              quantity: newQuantity,
+              addAmount: "", // limpia el campo
+              addAmountUnit: currentItem.unit,
+            }
+          : s
+      )
+    );
     handleCloseModal();
   };
 
@@ -121,27 +126,24 @@ const AdminStockPage = () => {
       className="d-flex flex-direction-row justify-content-between align-items-center my-3"
       style={{ color: "#FFFFFF"}}
       > 
-          <Col md={10} xs={6}>
+        <Col md={10} xs={6}>
           <Link to="/dashboard">
-              <FaAngleLeft size={28} color="#fff"/>
+            <FaAngleLeft size={28} color="#fff"/>
           </Link>
-          </Col>
-          <Col md={2} xs={6}>
-              <Button className="btn-secondary" onClick={() => LogoutStaff(auth)}>
-                  Cerrar Sesión
-              </Button>
-          </Col>
+        </Col>
+        <Col md={2} xs={6}>
+          <Button className="btn-secondary" onClick={() => LogoutStaff(auth)}>
+            Cerrar Sesión
+          </Button>
+        </Col>
       </Row>
       <h2 className="text-white">Gestión de Stock</h2>
-
       {/* Formulario para agregar stock */}
       <StockForm onAdd={handleAddNewIngredient} />
-
       {Object.keys(stockByWeek)
         .sort((a, b) => b - a)
         .map((week) => (
           <Card key={week} className="mb-3 p-3">
-            {/* <h4>Semana {week}</h4> */}
             <h4 style={{ display:"inline"}}>Semana {weekNumber}</h4>
             <span style={{fontWeight: "normal", fontSize: "1rem"}}>
               ( {monday.format("DD MMM")} - {sunday.format("DD MMM")})
@@ -172,7 +174,6 @@ const AdminStockPage = () => {
             ))}
           </Card>
         ))}
-
       {/* Modal de edición */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
@@ -188,21 +189,21 @@ const AdminStockPage = () => {
               <Form.Group className="mb-2">
                 <Form.Label>Agregar cantidad</Form.Label>
                 <div style={{ display: "flex", gap: "0.5rem" }}>
-                <Form.Control
-                  type="number"
-                  value={currentItem.addAmount || ""}
-                  onChange={(e) =>
-                    setCurrentItem({ ...currentItem, addAmount: e.target.value })
-                  }
-                  placeholder="Cantidad a agregar"
-                />
-                <Form.Select
-                  value={currentItem.addAmountUnit || currentItem.unit}
-                  onChange={(e) =>
-                    setCurrentItem({ ...currentItem, addAmountUnit: e.target.value })
-                  }
-                  style={{ maxWidth: 90 }}
-                >
+                  <Form.Control
+                    type="number"
+                    value={currentItem.addAmount || ""}
+                    onChange={(e) =>
+                      setCurrentItem({ ...currentItem, addAmount: e.target.value })
+                    }
+                    placeholder="Cantidad a agregar"
+                  />
+                  <Form.Select
+                    value={currentItem.addAmountUnit || currentItem.unit}
+                    onChange={(e) =>
+                      setCurrentItem({ ...currentItem, addAmountUnit: e.target.value })
+                    }
+                    style={{ maxWidth: 90 }}
+                  >
                     <option value="g">g</option>
                     <option value="kg">kg</option>
                     <option value="ml">ml</option>
