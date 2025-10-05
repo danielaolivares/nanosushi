@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Form, Button, Row, Col } from "react-bootstrap";
 import { collection, getDocs } from "firebase/firestore";
 import { addProductAndRecipe, db } from "../firebase/firebaseFirestore";
 import { useAuth } from "../context/AuthContext";
@@ -205,12 +206,15 @@ const FormAddProduct = () => {
           {/* Ingredientes dinámicos */}
           <h4 className="mt-4" style={{ color: '#FFFFFF'}}>Ingredientes</h4>
           {/* --- Bloque para agregar un nuevo ingrediente --- */}
+          
           <div className="d-flex align-items-center mb-2" style={{ position: "relative", width: "100%" }}>
+          <Row>
+              <Col xs={12} md={6}>
             <div style={{ flex: 2, position: "relative" }}>
               <input
                 type="text"
                 placeholder="Ingrediente (ej: arroz, nori)"
-                className="form-control me-2"
+                className="form-control mb-2"
                 value={ingredientName}
                 onChange={e => setIngredientName(e.target.value)}
                 autoComplete="off"
@@ -221,7 +225,9 @@ const FormAddProduct = () => {
               {showSuggestions && (
                 <ul
                   className="list-group position-absolute w-100"
-                  style={{ zIndex: 10, maxHeight: 150, overflowY: "auto" }}
+                  style={{ zIndex: 10, 
+                    // maxHeight: 150, 
+                    overflowY: "auto" }}
                 >
                   {filteredSuggestions.map(item => (
                     <li
@@ -236,19 +242,23 @@ const FormAddProduct = () => {
                 </ul>
               )}
             </div>
+            </Col>
+            <Col xs={8} md={3}>
             <input
               type="number"
               step="0.01"
               placeholder="Cantidad"
-              className="form-control me-2"
-              style={{ maxWidth: "100px" }}
+              className="form-control mb-2"
+              // style={{ maxWidth: "100px" }}
               value={quantity}
               onChange={e => setQuantity(e.target.value)}
               // required
             />
+            </Col>
+            <Col xs={4} md={3}>
             <select
-              className="form-select me-2"
-              style={{ maxWidth: "90px" }}
+              className="form-select mb-2"
+              // style={{ maxWidth: "90px" }}
               value={unit}
               onChange={e => setUnit(e.target.value)}
             >
@@ -258,6 +268,8 @@ const FormAddProduct = () => {
               <option value="l">l</option>
               <option value="unidades">unidades</option>
             </select>
+            </Col>
+            <Col xs={12}>
             <button
               type="button"
               className="btn btn-secondary"
@@ -265,10 +277,13 @@ const FormAddProduct = () => {
             >
               + Agregar Ingrediente
             </button>
+            </Col>
+            </Row>
           </div>
+          
           {/* --- Listado de ingredientes agregados --- */}
           {ingredients.length > 0 && (
-            <ul className="list-group mb-3">
+            <ul className="list-group mb-3 mt-3">
               {ingredients.map((ingredient, index) => (
                 <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
                   <span>
