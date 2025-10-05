@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container, Card, Button, Spinner } from "react-bootstrap";
+import { Container, Card, Button, Spinner, Row, Col } from "react-bootstrap";
 import { db } from "../../firebase/firebaseFirestore";
 import {
   collection,
@@ -11,6 +11,9 @@ import {
   where,
   increment
 } from "firebase/firestore";
+import { auth, LogoutStaff } from "../../firebase/firebaseAuth";
+import { FaAngleLeft } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -129,6 +132,21 @@ const AdminOrders = () => {
 
   return (
     <Container className="mt-5">
+      <Row 
+      className="d-flex flex-direction-row justify-content-between align-items-center my-3"
+      style={{ color: "#FFFFFF"}}
+      > 
+          <Col md={10} xs={6}>
+          <Link to="/dashboard">
+              <FaAngleLeft size={28} color="#fff"/>
+          </Link>
+          </Col>
+          <Col md={2} xs={6}>
+              <Button className="btn-secondary" onClick={() => LogoutStaff(auth)}>
+                  Cerrar Sesión
+              </Button>
+          </Col>
+      </Row>
       <h2 className="text-white">📋 Pedidos</h2>
 
       {orders.length === 0 ? (
