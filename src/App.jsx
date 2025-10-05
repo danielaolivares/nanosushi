@@ -21,7 +21,7 @@ export default function AppRouter() {
       {/* <Route path="/" element={<Home />} />
       <Route path="/menu" element={<Menu />} /> */}
       <Route 
-      path="/admin-ingredients" 
+      path="/admin-stock" 
       element={<AdminIngredient />} 
       />
       <Route 
