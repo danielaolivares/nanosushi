@@ -14,7 +14,7 @@ import {
 import { auth, LogoutStaff } from "../../firebase/firebaseAuth";
 import { Container, Card, Button, Spinner, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { FaAngleLeft } from "react-icons/fa";
+import { FaAngleLeft, FaCheck } from "react-icons/fa";
 import { convertToBaseUnit } from "../../utils/UnitConversion";
 
 const AdminOrders = () => {
@@ -156,7 +156,7 @@ const AdminOrders = () => {
             </Button>
           </Col>
       </Row>
-      <h2 className="text-white">📋 Pedidos</h2>
+      <h2 className="text-white">Pedidos</h2>
       <Row>
       {orders.length === 0 
         ? (
@@ -235,7 +235,9 @@ const AdminOrders = () => {
                         {processingId === order.id ? <Spinner animation="border" size="sm" /> : "Confirmar luego de Pago"}
                       </Button>
                     ) : (
-                      <span className="text-success">Pedido confirmado ✅</span>
+                      <span className="text-success">
+                        <FaCheck className="pr-1"/>
+                        Pedido confirmado</span>
                     )}
                   </div>
                 </Card>
