@@ -111,7 +111,7 @@ const CartPage = ({ cart, setCart, deliveryMethod, setDeliveryMethod }) => {
             </Card>
             <Button 
               className="mt-3 w-100 mb-5" 
-              variant="success" 
+              style={{ backgroundColor: "#625DB1", color: "#FFFFFF" }}
               onClick={() => navigate("/checkout")}
             >
               Confirmar Pedido

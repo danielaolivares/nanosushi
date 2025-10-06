@@ -300,9 +300,13 @@ const FormAddProduct = () => {
               ))}
             </ul>
           )}
-          <button type="submit" className="btn btn-primary my-5" disabled={loading}>
+          <Button 
+          style={{ backgroundColor: "#625DB1", color: "#FFFFFF" }} 
+          type="submit" 
+          className="btn my-5 w-100" 
+          disabled={loading}>
             {loading ? "Subiendo..." : "Subir Producto"}
-          </button>
+          </Button>
         </form>
       );
 };

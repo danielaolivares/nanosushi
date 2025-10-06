@@ -173,7 +173,10 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
                   </a>
                 </p>
               </Card>
-              <Button variant="success" type="submit" className="mt-3 mb-5">
+              <Button 
+              style={{ backgroundColor: "#625DB1", color: "#FFFFFF" }} 
+              type="submit" 
+              className="mt-3 mb-5 w-100">
                 Finalizar Pedido
               </Button>
             </Form>

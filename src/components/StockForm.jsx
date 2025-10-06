@@ -185,7 +185,11 @@ const StockForm = ({ user, onAdd }) => {
           </div>
         </Col>
         <Col xs={6} md={2}>
-          <Button type="submit" variant="success">
+          <Button 
+          type="submit" 
+          style={{ backgroundColor: "#625DB1", color: "#FFFFFF" }} 
+          size="md"
+          className="w-100">
             Agregar
           </Button>
         </Col>
