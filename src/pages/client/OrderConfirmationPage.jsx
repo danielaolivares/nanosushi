@@ -28,6 +28,13 @@ const OrderConfirmationPage = () => {
       </Container>
     );
   }
+  const statusMap = {
+  "pending-payment": { color: "orange", label: "Pendiente de confirmación" },
+  "confirmed": { color: "#5ed305", label: "Confirmado" },
+  "rejected": { color: "red", label: "Rechazado" }
+};
+
+  const statusInfo = statusMap[order.status] || { color: "#fff", label: order.status };
 
   return (
     <Container className="mt-4">
@@ -36,9 +43,12 @@ const OrderConfirmationPage = () => {
         <h2 className="text-white mb-3">Estado del Pedido</h2>
           <Card className="p-4" style={{ backgroundColor: "rgba(217, 217, 217, 0.2)", color:"#FFFFFF" }}>
             <p>Hola <strong>{order.customer.name}</strong></p>
-            <p>El estado actual de tu pedido es: <strong>
-              {order.status === "pending-payment" 
-            ? "Pendendiente de confirmación": "rejected"? "Rechazado" : "Confirmado"}</strong></p>
+            <p>
+              El estado actual de tu pedido es:{" "}
+              <strong style={{ color: statusInfo.color }}>
+                {statusInfo.label}
+              </strong>
+            </p>
             <hr />
             <h4>Resumen</h4>
             {order.items.map((item, index) => (
@@ -62,22 +72,18 @@ const OrderConfirmationPage = () => {
               <Col><strong>Total</strong></Col>
               <Col className="text-end"><strong>${order.total}</strong></Col>
             </Row>
-            {/* <Row>
-              <Col><strong>Total</strong></Col>
-              <Col className="text-end"><strong>${order.total}</strong></Col>
-            </Row> */}
             {order.status === "pending-payment" && (
-              <p className="mt-3 text-warning">
+              <p className="mt-3">
                 Tu transferencia está en revisión, pronto será validada
               </p>
             )}
             {order.status === "confirmed" && (
-              <p className="mt-3 text-success">
-                Tu pago fue confirmado 🎉 Tu pedido estará listo pronto.
+              <p className="mt-3">
+                Tu pago fue confirmado.Tu pedido estará listo pronto.
               </p>
             )}
             {order.status === "rejected" && (
-              <p className="mt-3 text-danger">
+              <p className="mt-3">
                 Hubo un problema con tu pago. Por favor contáctanos a este número: 
                 <strong> +56 9 1234 5678</strong>
               </p>
