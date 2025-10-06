@@ -1,3 +1,7 @@
-label{
+label, 
+#placeholderName::placeholder, 
+#placeholderEmail::placeholder, 
+#placeholderWhatsapp::placeholder, 
+#placeholderAddress::placeholder {
     color: #FFFFFF;
 }
