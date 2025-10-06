@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-import { readProducts } from "../../firebase/firebaseFirestore";
 import { Button, Card, Container, Row, Col, Navbar, Nav } from 'react-bootstrap';
 import { FaShoppingCart } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { getDocs, collection } from "firebase/firestore";
+import { readProducts, db } from "../../firebase/firebaseFirestore";
 import '../../styles/menuclient.css';
 
 const Menu = ({cart, setCart}) => {
     const [products, setProducts] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("all");
+    const [stock, setStock] = useState([]);
+    const [recipes, setRecipes] = useState([]);
 
     // Obtener cantidad total en el carrito
   const totalItems = Object.values(cart).reduce((acc, item) => acc + item.quantity, 0);
@@ -20,6 +23,30 @@ const Menu = ({cart, setCart}) => {
         };
         fetchData();
     }, []);
+
+    useEffect(() => {
+      const fetchStockAndRecipes = async () => {
+        const stockSnap = await getDocs(collection(db, "stock"));
+        setStock(stockSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+
+        const recipesSnap = await getDocs(collection(db, "recipes"));
+        setRecipes(recipesSnap.docs.map(doc => doc.data()));
+      };
+      fetchStockAndRecipes();
+    }, []);
+
+
+    const canPrepareProduct = (product, quantity = 1) => {
+      const recipe = recipes.find(r => r.productId === product.id);
+      if (!recipe || !recipe.ingredients) return true; // Si no hay receta, se asume disponible
+
+      return recipe.ingredients.every(ing => {
+        const stockItem = stock.find(s => s.id === ing.ingredientId);
+        if (!stockItem) return false;
+        // Verifica si hay suficiente stock para la cantidad deseada
+        return stockItem.quantity >= Number(ing.quantity) * quantity;
+      });
+    };
 
     //filtramos productos según la categoría seleccionada
     const filteredProducts = 
@@ -129,9 +156,15 @@ const Menu = ({cart, setCart}) => {
                 className="mb-3"
                 >
                   <Card xs={12}
-                  className="shadow-sm h-100"
+                  className={`shadow-sm h-100 position-relative ${!canPrepareProduct(product, getProductQuantity(product.id) + 1) ? "card-disabled" : ""}`}
                   id="card-product"
                   >
+                    {/* Overlay para agotado */}
+                    {!canPrepareProduct(product, getProductQuantity(product.id) + 1) && (
+                      <div className="card-overlay">
+                        <span className="agotado-text">Agotado</span>
+                      </div>
+                    )}
                     <Row>
                       <Col xs={4}>
                       <Card.Img 
@@ -158,10 +191,11 @@ const Menu = ({cart, setCart}) => {
                           </Card.Text>
                           <Button
                             onClick={() => handleRemoveFromCart(product.id)}
-                            disabled={getProductQuantity(product.id) === 0}
+                            disabled={getProductQuantity(product.id) === 0 || !canPrepareProduct(product, getProductQuantity(product.id))}
                             >-</Button>
                           <span className="p-2">{getProductQuantity(product.id)}</span>
-                          <Button onClick={() => handleAddToCart(product)}>+</Button>
+                          <Button onClick={() => handleAddToCart(product)}
+                            disabled={!canPrepareProduct(product, getProductQuantity(product.id) + 1)}>+</Button>
                         </Col>
                       </Row>
                       </Col>
