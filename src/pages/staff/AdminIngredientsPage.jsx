@@ -76,10 +76,16 @@ const AdminStockPage = () => {
     }
 
     // Solo guardamos si se agregó cantidad positiva
+    // const newAddedQuantities = [...(currentItem.addedQuantities || []), addAmountBase];
+    // const newQuantity =
+    // Number(currentItem.initialQuantity || 0) +
+    // newAddedQuantities.reduce((a, b) => a + b, 0);
+    // const stockRef = doc(db, "stock", currentItem.id);
+
+    // Solo guardamos si se agregó cantidad positiva
     const newAddedQuantities = [...(currentItem.addedQuantities || []), addAmountBase];
-    const newQuantity =
-    Number(currentItem.initialQuantity || 0) +
-    newAddedQuantities.reduce((a, b) => a + b, 0);
+    // CORRECCIÓN: Solo suma la cantidad actual + lo nuevo
+    const newQuantity = Number(currentItem.quantity || 0) + addAmountBase;
     const stockRef = doc(db, "stock", currentItem.id);
 
     await updateDoc(stockRef, {
