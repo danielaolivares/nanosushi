@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Container, Card, Row, Col, Button, Modal, Form } from "react-bootstrap";
 import { FaEdit, FaAngleLeft } from "react-icons/fa";
 import { db } from "../../firebase/firebaseFirestore";
-import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc, addDoc } from "firebase/firestore";
 import { auth, LogoutStaff } from "../../firebase/firebaseAuth";
 import dayjs from "dayjs";
 import isoWeek from "dayjs/plugin/isoWeek";
@@ -46,6 +46,34 @@ const AdminStockPage = () => {
       }
     });
   };
+
+  const handleArchiveAndResetStock = async () => {
+  if (!window.confirm("¿Estás seguro de cerrar la semana y archivar el stock? Esta acción no se puede deshacer.")) return;
+
+  const week = dayjs().isoWeek();
+  const year = dayjs().year();
+
+  for (const item of stock) {
+    // 1. Guarda en historicos_stock
+    await addDoc(collection(db, "historicos_stock"), {
+      ...item,
+      archivedAt: new Date(),
+      week,
+      year,
+    });
+
+    // 2. Resetea el stock para la nueva semana
+    await updateDoc(doc(db, "stock", item.id), {
+      initialQuantity: item.quantity,
+      addedQuantities: [],
+      createdAt: new Date(),
+      week,
+      year,
+    });
+  }
+  alert("¡Stock archivado y reiniciado para la nueva semana!");
+  fetchStock(); // refresca la lista
+};
 
   // Abrir modal de edición
   const handleOpenModal = (item) => {
@@ -153,9 +181,24 @@ const AdminStockPage = () => {
           <Card key={week} className="mb-3 p-3">
             <Row>
               <Col md={4} className="mt-2 mb-3">
-            <h4 style={{ display:"inline"}}>Semana {weekNumber} /<span style={{fontWeight: "normal", fontSize: "1rem", display:"inline"}}>
-              ( {monday.format("DD MMM")} - {sunday.format("DD MMM")})
-            </span></h4>
+              <h4 style={{ display:"inline"}}>Semana {weekNumber} /
+                <span style={{fontWeight: "normal", fontSize: "1rem", display:"inline"}}>
+                ( {monday.format("DD MMM")} - {sunday.format("DD MMM")})
+              </span></h4>
+            </Col>
+            <Col 
+            className="text-md-end">
+              <Button
+                variant="outline"
+                className="mb-3"
+                onClick={handleArchiveAndResetStock}
+                style={{
+                  color: "#444867",
+                  borderColor: "#444867"
+                }}
+              >
+                Cerrar semana y archivar stock
+              </Button>
             </Col>
             </Row>
             {stockByWeek[week].map((item, idx) => (
@@ -166,7 +209,10 @@ const AdminStockPage = () => {
                 <Col xs={12} md={6}>
                  <strong style={{color:"#6C757D"}}> {item.quantity} {item.unit} </strong> <br />
                   <small>
-                    Inicial: {item.initialQuantity} {item.unit} | Agregado: {item.addedQuantities?.join(", ") || 0} {item.unit}
+                    Inicial: {item.initialQuantity} {item.unit} | Agregado: {
+                      (item.addedQuantities?.slice(-5).join(", ") || 0)
+                    } {item.unit}
+                    {/* Inicial: {item.initialQuantity} {item.unit} | Agregado: {item.addedQuantities?.join(", ") || 0} {item.unit} */}
                   </small>
                 </Col>
                 <Col xs={12} md={2}>
