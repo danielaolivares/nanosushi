@@ -130,6 +130,19 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
                       required
                       style={{ backgroundColor: "#44448670", color: "#FFFFFF" }}
                     />
+                    <Card className="p-3 mt-3" style={{ backgroundColor: "rgba(217, 217, 217, 0.2)", color:"#FFFFFF" }}>
+                      <h4>Ubicación</h4>
+                      <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.020316564276!2d-70.6482696848006!3d-33.43777698077356!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9662c59e6b7e4e6b%3A0x7e7e7e7e7e7e7e7e!2sSantiago%2C%20Chile!5e0!3m2!1ses!2scl!4v1633024800000!5m2!1ses!2scl"
+                        width="100%"
+                        height="350"
+                        style={{ border: 0 }}
+                        allowFullScreen=""
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        title="Ubicación en Google Maps"
+                      ></iframe>
+                    </Card>
                   </Form.Group>
                 )}
               </Card>
@@ -173,6 +186,7 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
                   </a>
                 </p>
               </Card>
+              
               <Button 
               style={{ backgroundColor: "#625DB1", color: "#FFFFFF" }} 
               type="submit" 
