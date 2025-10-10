@@ -21,6 +21,12 @@ const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [processingId, setProcessingId] = useState(null); // para bloquear botones mientras se procesa
   
+  function sendWhatsApp(phone, message) {
+  // Limpia el número (quita espacios y guiones)
+  const cleanPhone = phone.replace(/\D/g, "");
+  const url = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
+}
   // Escuchar órdenes en tiempo real
   useEffect(() => {
     const ordersCol = collection(db, "orders");
@@ -119,6 +125,12 @@ const AdminOrders = () => {
         setProcessingId(null);
       }
     };
+    // Confirmar pedido y enviar WhatsApp
+    const handleConfirmAndWhatsApp = async (orderId) => {
+  await handleConfirm(orderId);
+  const order = orders.find((o) => o.id === orderId);
+  sendWhatsApp(order.customer?.whatsapp, "Tu pago fue aprobado. ¡Gracias por tu compra!");
+};    
 
     // Rechazar pedido (no descuenta stock)
     const handleReject = async (orderId) => {
@@ -166,6 +178,7 @@ const AdminOrders = () => {
               const subtotal = order.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
               const deliveryCost = order.deliveryCost || 0;
               const total = order.total || (subtotal + deliveryCost);
+              
               return (
                 <Col xs={12} md={4} key={order.id}>
                 <Card key={order.id}  className="p-3 mb-3 bg-dark text-white">
@@ -210,13 +223,13 @@ const AdminOrders = () => {
                     ? (
                       <>
                         <Button
-                          variant="success"
-                          className="me-2 my-3"
-                          onClick={() => handleConfirm(order.id)}
-                          disabled={processingId === order.id}
-                        >
-                          {processingId === order.id ? <Spinner animation="border" size="sm" /> : "Confirmar Pago"}
-                        </Button>
+  variant="success"
+  className="me-2 my-3"
+  onClick={() => handleConfirmAndWhatsApp(order.id)}
+  disabled={processingId === order.id}
+>
+  {processingId === order.id ? <Spinner animation="border" size="sm" /> : "Confirmar Pago"}
+</Button>
                         <Button
                           variant="danger"
                           onClick={() => handleReject(order.id)}

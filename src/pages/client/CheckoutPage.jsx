@@ -163,6 +163,19 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod }) => {
                       onChange={handleChange}
                       onLocationChange={setMapLocation}
                     />
+                    {/* Mensaje si falta numeración */}
+                    {formData.address && !/\d/.test(formData.address) && (
+                      <div
+                        style={{
+                          color: "#ff2d2d",
+                          fontWeight: "bold",
+                          fontSize: "1rem",
+                          marginTop: "8px"
+                        }}
+                      >
+                        Por favor, ingresa la numeración de tu dirección para una mejor ubicación en Google Maps.
+                      </div>
+                    )}
                   </Form.Group>
                   <Card className="p-3 mb-3" style={{ backgroundColor: "rgba(217, 217, 217, 0.2)", color:"#FFFFFF" }}>
                     <h4>Ubicación en Google Maps</h4>
