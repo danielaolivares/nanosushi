@@ -164,8 +164,8 @@ const AdminOrders = () => {
           ) : (
             orders.map((order) => {
               const subtotal = order.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-              const deliveryCost = order.deliveryMethod === "delivery" ? 2000 : 0;
-              const total = subtotal + deliveryCost;
+              const deliveryCost = order.deliveryCost || 0;
+              const total = order.total || (subtotal + deliveryCost);
               return (
                 <Col xs={12} md={4} key={order.id}>
                 <Card key={order.id}  className="p-3 mb-3 bg-dark text-white">

@@ -96,7 +96,7 @@ const CartPage = ({ cart, setCart, deliveryMethod, setDeliveryMethod }) => {
                 />
                 <Form.Check 
                   type="radio"
-                  label={`Delivery (+$${deliveryCost})`}
+                  label={`Delivery (Con costo)`}
                   value="delivery"
                   checked={deliveryMethod === "delivery"}
                   onChange={(e) => setDeliveryMethod(e.target.value)}
@@ -106,8 +106,7 @@ const CartPage = ({ cart, setCart, deliveryMethod, setDeliveryMethod }) => {
             {/* Total */}
             <Card className="mt-3 p-3 card-bg-blur" style={{ backgroundColor: "rgba(217, 217, 217, 0.3)", color:"#FFFFFF" }}>
               <h5>Subtotal: ${subtotal}</h5>
-              {deliveryMethod === "delivery" && <p>Costo delivery: ${deliveryCost}</p>}
-              <h3>Total: ${total}</h3>
+              {deliveryMethod === "delivery" && <p>Costo delivery: ${subtotal}</p>}
             </Card>
             <Button 
               className="mt-3 w-100 mb-5" 
