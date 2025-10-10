@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { useRef, useEffect } from "react";
 
-const AddressAutocomplete = ({ value, onChange }) => {
+const AddressAutocomplete = ({ value, onChange, onLocationChange }) => {
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -14,9 +15,15 @@ const AddressAutocomplete = ({ value, onChange }) => {
         if (place.formatted_address) {
           onChange({ target: { name: "address", value: place.formatted_address } });
         }
+        if (place.geometry && place.geometry.location && onLocationChange) {
+          onLocationChange({
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng()
+          });
+        }
       });
     }
-  }, [onChange]);
+  }, [onChange, onLocationChange]);
 
   return (
     <input
