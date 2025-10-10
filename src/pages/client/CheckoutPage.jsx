@@ -5,9 +5,11 @@ import { collection, addDoc } from "firebase/firestore";
 import { db } from '../../firebase/firebaseFirestore';
 import '../../styles/cartPages.css';
 import AddressAutocomplete from "../../components/AddressAutocomplete";
+import GoogleMapWithPolygons from "../../components/GoogleMapWithPolygons";
 
-const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
+const CheckoutPage = ({ cart, setCart, deliveryMethod }) => {
   const navigate = useNavigate();
+  const [zone, setZone] = useState(null);
   const [mapLocation, setMapLocation] = useState({ lat: -33.487984, lng: -70.7579365 }); // ubicación inicial (Santiago)
   const [formData, setFormData] = useState({
     name: "",
@@ -18,8 +20,42 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
 
   const cartItems = Object.values(cart);
 
+  // Calcular subtotal
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const total = deliveryMethod === "delivery" ? subtotal + deliveryCost : subtotal;
+
+  // Calcular hora de entrega automática
+  const now = new Date();
+  const deliveryTime = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+
+  // Calcular el precio de delivery según zona y hora
+  function getZonePrice(zone, deliveryTime) {
+    if (!zone || !deliveryTime) return 0;
+    const [hour, minute] = deliveryTime.split(":").map(Number);
+    const totalMinutes = hour * 60 + minute;
+
+    if (totalMinutes >= 600 && totalMinutes <= 1260) {
+      // 10:00 a 21:00
+      if (zone === "zona1") return 1000;
+      if (zone === "zona2") return 1500;
+    }
+    if (totalMinutes >= 1261 && totalMinutes <= 1410) {
+      // 21:01 a 23:30
+      if (zone === "zona1") return 1500;
+      if (zone === "zona2") return 2000;
+    }
+    return 0;
+  }
+
+  // Delivery cost dinámico
+  const dynamicDeliveryCost =
+    deliveryMethod === "delivery" && zone
+      ? getZonePrice(zone, deliveryTime)
+      : 0;
+
+  // Calcular total
+  const total = deliveryMethod === "delivery"
+    ? subtotal + dynamicDeliveryCost
+    : subtotal;
 
   // Actualiza el estado del formulario
   const handleChange = (e) => {
@@ -45,13 +81,14 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
       return;
     }
 
-    // Aquí guardarías el pedido en Firebase
+    // Guardar el pedido en Firebase
     const order = {
       customer: formData,
       items: cartItems,
       deliveryMethod,
+      deliveryCost: dynamicDeliveryCost,
       total,
-      status: "pending-payment", // luego se confirmará manualmente
+      status: "pending-payment",
       createdAt: new Date().toISOString(),
     };
 
@@ -60,10 +97,8 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
 
       console.log("Pedido guardado con ID:", docRef.id);
 
-      // Limpiar carrito
       setCart({});
 
-      // Navegar con ID de la orden
       navigate("/order-confirmation", { state: { orderId: docRef.id } });
     } catch (err) {
       console.error("Error guardando el pedido:", err);
@@ -131,16 +166,18 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
                   </Form.Group>
                   <Card className="p-3 mb-3" style={{ backgroundColor: "rgba(217, 217, 217, 0.2)", color:"#FFFFFF" }}>
                     <h4>Ubicación en Google Maps</h4>
-                    <iframe
-                      src={`https://www.google.com/maps?q=${mapLocation.lat},${mapLocation.lng}&hl=es&z=16&output=embed`}
-                      width="100%"
-                      height="350"
-                      style={{ border: 0 }}
-                      allowFullScreen=""
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      title="Ubicación en Google Maps"
-                    ></iframe>
+                    <GoogleMapWithPolygons location={mapLocation} onZoneChange={setZone} />
+                    {zone && (
+                      <div className="text-info">
+                        Cobro {zone === "zona1" ? "zona 1" : "zona 2"}: ${getZonePrice(zone, deliveryTime)}
+                      </div>
+                    )}
+                    {!zone && <div style={{
+      color: "#ff2d2d",
+      fontWeight: "bold",
+      fontSize: "1.2rem",
+      marginTop: "10px"
+    }} >Ubicación fuera de zonas de reparto</div>}
                   </Card>
                 </>
               )}
@@ -161,7 +198,7 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod, deliveryCost }) => {
               {deliveryMethod === "delivery" && (
                 <Row>
                   <Col>Delivery</Col>
-                  <Col className="text-end">${deliveryCost}</Col>
+                  <Col className="text-end">${dynamicDeliveryCost}</Col>
                 </Row>
               )}
               <Row className="mt-2">
