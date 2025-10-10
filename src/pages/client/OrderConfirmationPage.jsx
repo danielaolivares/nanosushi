@@ -3,8 +3,13 @@ import { useLocation } from "react-router-dom";
 import { db } from "../../firebase/firebaseFirestore";
 import { doc, onSnapshot } from "firebase/firestore";
 import { Container, Card, Row, Col } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+
 
 const OrderConfirmationPage = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const { orderId } = location.state || {};
   const [order, setOrder] = useState(null);
@@ -49,6 +54,9 @@ const OrderConfirmationPage = () => {
                 {statusInfo.label}
               </strong>
             </p>
+            <Button className="btn btn-primary mb-3" onClick={() => navigate("/")}>
+              Volver al Home
+            </Button>
             <hr />
             <h4>Resumen</h4>
             {order.items.map((item, index) => (

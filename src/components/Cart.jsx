@@ -51,12 +51,8 @@ const Cart = ({ cart, onIncreaseQuantity, onDecreaseQuantity, onRemoveItem }) =>
           </Card.Body>
         </Card>
       ))}
-      {/* Total */}
-      <Card className="mt-3" style={{ backgroundColor: "rgba(217, 217, 217, 0.3)", color:"#FFFFFF" }}>
-        <Card.Body>
-          <h5>Total: ${total}</h5>
-        </Card.Body>
-      </Card>
+      
+      
     </Container>
   );
 };
