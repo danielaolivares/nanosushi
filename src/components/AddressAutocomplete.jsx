@@ -34,7 +34,7 @@ const AddressAutocomplete = ({ value, onChange, onLocationChange }) => {
       onChange={onChange}
       placeholder="Calle 123, Comuna"
       required
-      style={{ backgroundColor: "#44448670", color: "#FFFFFF" }}
+      style={{ backgroundColor: "#343a40", color: "#FFFFFF", border: "1px solid #6c757d" }}
       className="form-control"
     />
   );
