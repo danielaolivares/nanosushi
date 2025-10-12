@@ -3,6 +3,7 @@ import { Container, Form, Button, Card, Row, Col } from 'react-bootstrap';
 import { useNavigate, Link } from 'react-router-dom';
 import { collection, addDoc } from "firebase/firestore";
 import { db } from '../../firebase/firebaseFirestore';
+import { bloquearVentana } from '../../firebase/firebaseFirestore';
 import '../../styles/cartPages.css';
 import AddressAutocomplete from "../../components/AddressAutocomplete";
 import GoogleMapWithPolygons from "../../components/GoogleMapWithPolygons";
@@ -26,6 +27,13 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod }) => {
   // Calcular hora de entrega automática
   const now = new Date();
   const deliveryTime = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+
+  // Calcular ventana de bloqueo para el pedido
+const totalPreparationTime = cartItems.reduce((acc, item) => acc + (item.preparationTime || 0), 0);
+const bufferTime = 10; // minutos extra
+const deliveryMinutes = 45; // minutos de delivery
+const totalLeadTime = totalPreparationTime + bufferTime + deliveryMinutes;
+const duracionHoras = Math.ceil(totalLeadTime / 60); // duración en horas
 
   // Calcular el precio de delivery según zona y hora
   function getZonePrice(zone, deliveryTime) {
@@ -68,43 +76,48 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod }) => {
 
   // Enviar el pedido
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Validación rápida
-    if (!formData.name || !formData.email || !formData.whatsapp) {
-      alert("Por favor, completa todos los campos obligatorios.");
-      return;
-    }
+  // Validación rápida
+  if (!formData.name || !formData.email || !formData.whatsapp) {
+    alert("Por favor, completa todos los campos obligatorios.");
+    return;
+  }
 
-    if (deliveryMethod === "delivery" && !formData.address) {
-      alert("Por favor, ingresa tu dirección para el delivery.");
-      return;
-    }
+  if (deliveryMethod === "delivery" && !formData.address) {
+    alert("Por favor, ingresa tu dirección para el delivery.");
+    return;
+  }
 
-    // Guardar el pedido en Firebase
-    const order = {
-      customer: formData,
-      items: cartItems,
-      deliveryMethod,
-      deliveryCost: dynamicDeliveryCost,
-      total,
-      status: "pending-payment",
-      createdAt: new Date().toISOString(),
-    };
-
-    try {
-      const docRef = await addDoc(collection(db, "orders"), order);
-
-      console.log("Pedido guardado con ID:", docRef.id);
-
-      setCart({});
-
-      navigate("/order-confirmation", { state: { orderId: docRef.id } });
-    } catch (err) {
-      console.error("Error guardando el pedido:", err);
-      alert("Hubo un problema al procesar tu pedido. Intenta nuevamente.");
-    }
+  // Guardar el pedido en Firebase
+  const order = {
+    customer: formData,
+    items: cartItems,
+    deliveryMethod,
+    deliveryCost: dynamicDeliveryCost,
+    total,
+    status: "pending-payment",
+    createdAt: new Date().toISOString(),
   };
+
+  try {
+    // Bloquear ventana de tiempo en Firestore
+    const today = new Date().toISOString().split('T')[0];
+    const startHour = parseInt(deliveryTime.split(':')[0]);
+    await bloquearVentana(today, startHour, duracionHoras);
+
+    const docRef = await addDoc(collection(db, "orders"), order);
+
+    console.log("Pedido guardado con ID:", docRef.id);
+
+    setCart({});
+
+    navigate("/order-confirmation", { state: { orderId: docRef.id } });
+  } catch (err) {
+    console.error("Error guardando el pedido:", err);
+    alert("Hubo un problema al procesar tu pedido. Intenta nuevamente.");
+  }
+};
 
   return (
     <Container className="mt-4">

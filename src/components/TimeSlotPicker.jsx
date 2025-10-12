@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '../firebase/firebaseFirestore';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { Form, Spinner } from 'react-bootstrap';
+import { collection, addDoc } from 'firebase/firestore';
 
 // cartItems: [{..., preparationTime: 15}, ...]
 const TimeSlotPicker = ({ cartItems, onSlotSelect }) => {

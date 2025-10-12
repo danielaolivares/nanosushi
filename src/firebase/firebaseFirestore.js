@@ -7,6 +7,27 @@ export const db = getFirestore(app);
 //const auth = getAuth(app);
 //const user = auth.currentUser;
 
+/**
+ * Bloquea una ventana de tiempo en la colección blockedSlots
+ * @param {string} date - Fecha en formato 'YYYY-MM-DD'
+ * @param {number} startHour - Hora de inicio (ej: 19)
+ * @param {number} duracionHoras - Cantidad de horas a bloquear
+ */
+export const bloquearVentana = async (date, startHour, duracionHoras) => {
+  try {
+    for (let i = 0; i < duracionHoras; i++) {
+      const horaBloqueada = `${(startHour + i).toString().padStart(2, '0')}:00`;
+      await addDoc(collection(db, "blockedSlots"), {
+        date,
+        time: horaBloqueada,
+      });
+    }
+  } catch (e) {
+    console.error("Error bloqueando ventana de tiempo: ", e);
+    throw e;
+  }
+};
+
 export const addProductAndRecipe = async ({product, ingredients}) => {
   try {
     let imageUrl = null;
