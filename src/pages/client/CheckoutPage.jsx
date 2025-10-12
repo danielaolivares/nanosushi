@@ -12,6 +12,7 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod }) => {
   const navigate = useNavigate();
   const [zone, setZone] = useState(null);
   const [mapLocation, setMapLocation] = useState({ lat: -33.487984, lng: -70.7579365 }); // ubicación inicial (Santiago)
+  
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -31,9 +32,20 @@ const CheckoutPage = ({ cart, setCart, deliveryMethod }) => {
   // Calcular ventana de bloqueo para el pedido
 const totalPreparationTime = cartItems.reduce((acc, item) => acc + (item.preparationTime || 0), 0);
 const bufferTime = 10; // minutos extra
-const deliveryMinutes = 45; // minutos de delivery
+let deliveryMinutes = 0;
+if (deliveryMethod === "delivery") {
+  if (zone === "zona1") {
+    deliveryMinutes = 7;
+  } else if (zone === "zona2") {
+    deliveryMinutes = 12;
+  }
+}; // minutos de delivery
 const totalLeadTime = totalPreparationTime + bufferTime + deliveryMinutes;
 const duracionHoras = Math.ceil(totalLeadTime / 60); // duración en horas
+const readyDate = new Date(now.getTime() + totalLeadTime * 60000);
+const readyHour = readyDate.getHours().toString().padStart(2, "0");
+const readyMinute = readyDate.getMinutes().toString().padStart(2, "0");
+const horaPedidoListo = `${readyHour}:${readyMinute}`;
 
   // Calcular el precio de delivery según zona y hora
   function getZonePrice(zone, deliveryTime) {
@@ -51,6 +63,7 @@ const duracionHoras = Math.ceil(totalLeadTime / 60); // duración en horas
       if (zone === "zona1") return 1500;
       if (zone === "zona2") return 2000;
     }
+    
     return 0;
   }
 
@@ -217,6 +230,10 @@ const duracionHoras = Math.ceil(totalLeadTime / 60); // duración en horas
                 </Row>
               ))}
               <hr />
+              <Row className="mt-2">
+                <Col><strong>Hora estimada de entrega</strong></Col>
+                <Col className="text-end"><strong>{horaPedidoListo}</strong></Col>
+              </Row>
               <Row>
                 <Col>Subtotal</Col>
                 <Col className="text-end">${subtotal}</Col>
