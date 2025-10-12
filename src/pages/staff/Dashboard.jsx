@@ -43,6 +43,15 @@ const Dashboard = () => {
                     </Link>
                 </Col>
                 <Col xs={12} md={3}>
+                    <Link to="/admin-products" style={{ textDecoration: 'none' }}>
+                        <Card style={{ backgroundColor: "rgba(217, 217, 217, 0.2)", color:"#FFFFFF" }}
+                            className="d-flex flex-column justify-content-center align-items-center p-3 mb-2">
+                            <MdAssignment style={{ fontSize: "3rem", color: "#FFFFFF" }}/>
+                            <Card.Title className="pt-2">Editar productos</Card.Title>
+                        </Card>
+                    </Link>
+                </Col>
+                <Col xs={12} md={3}>
                     <Link to="/admin-orders" style={{ textDecoration: 'none' }}>
                         <Card style={{ backgroundColor: "rgba(217, 217, 217, 0.2)", color:"#FFFFFF" }}
                             className="d-flex flex-column justify-content-center align-items-center p-3 mb-2">
@@ -60,6 +69,7 @@ const Dashboard = () => {
                         </Card>
                     </Link>
                 </Col>
+                
             </Row>
         </Container>
     );
