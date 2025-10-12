@@ -121,6 +121,7 @@ const AdminStockPage = () => {
       quantity: newQuantity,
       lowStockThreshold: Number(currentItem.lowStockThreshold || 0),
       lowStockUnit: currentItem.lowStockUnit || currentItem.unit,
+      preparationTime: Number(currentItem.preparationTime || 0), // Guardar tiempo de preparación
       updatedAt: new Date(),
     });
 
@@ -306,6 +307,18 @@ const AdminStockPage = () => {
                   </Col>
                 </Row>
               </Form.Group>
+              <Form.Group className="mb-2">
+              <Form.Label>Tiempo de preparación (minutos)</Form.Label>
+              <Form.Control
+                type="number"
+                min={0}
+                value={currentItem.preparationTime || ""}
+                onChange={(e) =>
+                  setCurrentItem({ ...currentItem, preparationTime: Number(e.target.value) })
+                }
+                placeholder="Ej: 15"
+              />
+            </Form.Group>
             </Form>
           </Modal.Body>
         )}

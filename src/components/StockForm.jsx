@@ -13,6 +13,7 @@ const StockForm = ({ user, onAdd }) => {
   const [unit, setUnit] = useState("g");
   const [lowStockThreshold, setLowStockThreshold] = useState("");
   const [lowStockThresholdUnit, setLowStockThresholdUnit] = useState("g");
+  const [preparationTime, setPreparationTime] = useState("");
   const [stockList, setStockList] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
@@ -91,6 +92,7 @@ const StockForm = ({ user, onAdd }) => {
         unit: baseUnit,
         lowStockThreshold: convertedThreshold || 0,
         lowStockThresholdUnit: baseUnit,
+        preparationTime: Number(preparationTime) || 0,
         createdBy: user?.email || "admin",
         createdAt: new Date(),
         week: currentWeek
@@ -107,94 +109,101 @@ const StockForm = ({ user, onAdd }) => {
     setUnit("g");
     setLowStockThreshold("");
     setLowStockThresholdUnit("g");
+    
   };
 
   return (
+    
     <Form onSubmit={handleSubmit} className="mb-4">
-      <Row className="align-items-end">
-        <Col xs={12} md={3} style={{ position: "relative" }}>
-          <Form.Label>Ingrediente</Form.Label>
-          <Form.Control
-            type="text"
-            value={ingredientName}
-            onChange={(e) => setIngredientName(e.target.value)}
-            placeholder="Ej: Arroz"
-            autoComplete="off"
-            required
-            onFocus={() => setShowSuggestions(filteredSuggestions.length > 0)}
-            onBlur={() => setTimeout(() => setShowSuggestions(false), 100)} // para permitir click en sugerencia
-          />
-          {showSuggestions && (
-            <ul
-              className="list-group position-absolute w-100"
-              style={{ zIndex: 10, maxHeight: 150, overflowY: "auto" }}
+  <Row className="align-items-end">
+    <Col xs={12} md={3} style={{ position: "relative" }}>
+      <Form.Label>Ingrediente</Form.Label>
+      <Form.Control
+        type="text"
+        value={ingredientName}
+        onChange={(e) => setIngredientName(e.target.value)}
+        placeholder="Ej: Arroz"
+        autoComplete="off"
+        required
+        onFocus={() => setShowSuggestions(filteredSuggestions.length > 0)}
+        onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
+      />
+      {showSuggestions && (
+        <ul
+          className="list-group position-absolute w-100"
+          style={{ zIndex: 10, maxHeight: 150, overflowY: "auto" }}
+        >
+          {filteredSuggestions.map(item => (
+            <li
+              key={item.id}
+              className="list-group-item list-group-item-action"
+              style={{ cursor: "pointer" }}
+              onClick={() => handleSuggestionClick(item.ingredientName)}
             >
-              {filteredSuggestions.map(item => (
-                <li
-                  key={item.id}
-                  className="list-group-item list-group-item-action"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleSuggestionClick(item.ingredientName)}
-                >
-                  {item.ingredientName}
-                </li>
-              ))}
-            </ul>
-          )}
-        </Col>
-        <Col xs={6} md={2}>
-          <Form.Label>Cantidad</Form.Label>
-          <Form.Control
-            type="number"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            placeholder="Cantidad"
-            required
-          />
-        </Col>
-        <Col xs={6} md={2}>
-          <Form.Label>Unidad</Form.Label>
-          <Form.Select value={unit} onChange={(e) => setUnit(e.target.value)}>
-            <option value="g">Gramos (g)</option>
-            <option value="kg">Kilos (kg)</option>
-            <option value="ml">Mililitros (ml)</option>
-            <option value="l">Litros (l)</option>
-            <option value="unidades">Unidades</option>
-          </Form.Select>
-        </Col>
-        <Col xs={6} md={3}>
-          <Form.Label>Alerta stock bajo</Form.Label>
-          <div style={{display: "flex", gap: "0.5rem"}}>
-            <Form.Control
-              type="number"
-              value={lowStockThreshold}
-              onChange={(e) => setLowStockThreshold(e.target.value)}
-              placeholder="Cantidad mínima para alerta"
-            />
-            <Form.Select
-            value={lowStockThresholdUnit}
-            onChange={(e) => setLowStockThresholdUnit(e.target.value)}
-            style={{maxWidth: 90}}
-            >
-              <option value="g">g</option>
-              <option value="kg">kg</option>
-              <option value="ml">ml</option>
-              <option value="l">l</option>
-              <option value="unidades">unidades</option>
-            </Form.Select>
-          </div>
-        </Col>
-        <Col xs={6} md={2}>
-          <Button 
-          type="submit" 
-          style={{ backgroundColor: "#625DB1", color: "#FFFFFF" }} 
-          size="md"
-          className="w-100">
-            Agregar
-          </Button>
-        </Col>
-      </Row>
-    </Form>
+              {item.ingredientName}
+            </li>
+          ))}
+        </ul>
+      )}
+    </Col>
+    <Col xs={6} md={2}>
+      <Form.Label>Cantidad</Form.Label>
+      <Form.Control
+        type="number"
+        value={quantity}
+        onChange={(e) => setQuantity(e.target.value)}
+        placeholder="Cantidad"
+        required
+      />
+    </Col>
+    <Col xs={6} md={2}>
+      <Form.Label>Unidad</Form.Label>
+      <Form.Select value={unit} onChange={(e) => setUnit(e.target.value)}>
+        <option value="g">Gramos (g)</option>
+        <option value="kg">Kilos (kg)</option>
+        <option value="ml">Mililitros (ml)</option>
+        <option value="l">Litros (l)</option>
+        <option value="unidades">Unidades</option>
+      </Form.Select>
+    </Col>
+    <Col xs={6} md={3}>
+      <Form.Label>Alerta stock bajo</Form.Label>
+      <div style={{display: "flex", gap: "0.5rem"}}>
+        <Form.Control
+          type="number"
+          value={lowStockThreshold}
+          onChange={(e) => setLowStockThreshold(e.target.value)}
+          placeholder="Cantidad mínima para alerta"
+        />
+        <Form.Select
+          value={lowStockThresholdUnit}
+          onChange={(e) => setLowStockThresholdUnit(e.target.value)}
+          style={{maxWidth: 90}}
+        >
+          <option value="g">g</option>
+          <option value="kg">kg</option>
+          <option value="ml">ml</option>
+          <option value="l">l</option>
+          <option value="unidades">unidades</option>
+        </Form.Select>
+      </div>
+    </Col>
+    <Col xs={6} md={2}>
+      <Button 
+        type="submit" 
+        style={{ backgroundColor: "#625DB1", color: "#FFFFFF" }} 
+        size="md"
+        className="w-100">
+        Agregar
+      </Button>
+    </Col>
+  </Row>
+  {/* Campo de tiempo de preparación debajo del input de cantidad */}
+  <Row>
+    <Col xs={12} md={2}>
+    </Col>
+  </Row>
+</Form>
   );
 };
 

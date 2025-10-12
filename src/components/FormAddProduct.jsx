@@ -24,6 +24,7 @@ const FormAddProduct = () => {
     const [ingredients, setIngredients] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+    const [preparationTime, setPreparationTime] = useState("");
 
     useEffect(() => {
       const fetchStock = async () => {
@@ -168,6 +169,20 @@ const FormAddProduct = () => {
             <label htmlFor="price" className="form-label">Precio</label>
             <input type="number" className="form-control" id="price" placeholder="Precio del Producto" name="price" value={product.price} onChange={handleChange} />
           </div>
+          <div>
+          <label htmlFor="preparationTime" className="form-label">Tiempo de preparación (minutos)</label>
+          <input className="d-flex align-items-center mb-2" style={{ position: "relative", width: "100%" }}
+            type="number"
+            min="0"
+            id="preparationTime"
+            placeholder="Ej: 15"
+            required
+            value={preparationTime}
+            onChange={e => setPreparationTime(e.target.value)}
+          />
+           </div>
+           <br />
+          
           <select className="form-select" aria-label="Default select example" name="category" value={product.category} onChange={handleChange}>
             <option value="">selecciona una categoría</option>
             <option value="1">Envuelto en Ciboulette</option>

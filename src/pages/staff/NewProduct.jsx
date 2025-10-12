@@ -3,8 +3,12 @@ import { auth, LogoutStaff } from "../../firebase/firebaseAuth";
 import { Container, Row, Button, Col } from "react-bootstrap";
 import { FaAngleLeft } from 'react-icons/fa';
 import { Link } from "react-router-dom";
+import { Form } from "react-bootstrap";
+import { useState } from "react";
+
 
 const NewProduct = () => {
+    
     return (
         <Container>
             <Row 
